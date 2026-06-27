@@ -1,0 +1,35 @@
+# Feld Labs Claude Skills
+
+A private Claude Code marketplace of reusable playbook skills, distilled from real Feld Labs builds.
+One source of truth, synced to every machine via the plugin system.
+
+## What's inside (`feld-skills` plugin)
+- **saas-billing**: payments, checkout, webhooks, entitlements, idempotency, plan and credit metering, test/live split.
+- **multi-tenant-isolation**: scope-by-tenant patterns, session context, legacy compat, the isolation release gate.
+- **product-positioning**: find the real buy reason, value-led hero, de-emphasize hype.
+- **marketing-asset-gen**: OG images and product screenshots via headless browser from the app's own CSS, privacy-blurred.
+
+## Install (per machine, once)
+```
+/plugin marketplace add feld-labs/claude-skills
+/plugin install feld-skills@feld-labs
+```
+(Private repo; needs access to the feld-labs GitHub org.)
+
+## Update (e.g., weekly, on each machine)
+```
+/plugin marketplace update feld-labs
+/plugin update feld-skills
+```
+Or just restart Claude Code, which re-reads installed plugins.
+
+## Adding or editing a skill
+1. Clone this repo on local disk (never inside a synced folder like Drive/OneDrive).
+2. Add `feld-skills/skills/<name>/SKILL.md` (kebab-case dir; frontmatter `name` + `description`).
+3. Bump `feld-skills/.claude-plugin/plugin.json` `version`, add a CHANGELOG entry, commit, push.
+4. Run the update commands above on each machine.
+
+## Notes
+- Global *rules* (no em-dashes, never run a git repo in a synced folder) are NOT shipped here; they
+  live in `~/.claude/CLAUDE.md` and sync via the separate dotfiles repo.
+- House style: no em-dashes anywhere.

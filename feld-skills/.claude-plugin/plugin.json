@@ -1,0 +1,12 @@
+{
+  "name": "feld-skills",
+  "version": "0.1.0",
+  "description": "Reusable Feld Labs playbooks: SaaS billing, multi-tenant isolation, product positioning, and marketing-asset generation.",
+  "author": {
+    "name": "Brian Feldman",
+    "email": "brian@feldand.co"
+  },
+  "repository": "https://github.com/feld-labs/claude-skills",
+  "license": "UNLICENSED",
+  "keywords": ["saas", "billing", "stripe", "multi-tenant", "positioning", "marketing", "playbook"]
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "feld-labs",
+  "description": "Feld Labs internal Claude Code skills: reusable playbooks distilled from real builds (SaaS billing, multi-tenant isolation, product positioning, marketing assets).",
+  "owner": {
+    "name": "Feld Labs",
+    "email": "brian@feldand.co"
+  },
+  "plugins": [
+    {
+      "name": "feld-skills",
+      "source": "./feld-skills",
+      "description": "Cross-project engineering and product playbooks for Feld Labs builds."
+    }
+  ]
+}
