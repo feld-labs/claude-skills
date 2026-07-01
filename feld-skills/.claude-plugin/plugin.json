@@ -1,12 +1,12 @@
 {
   "name": "feld-skills",
-  "version": "0.1.0",
-  "description": "Reusable Feld Labs playbooks: SaaS billing, multi-tenant isolation, product positioning, and marketing-asset generation.",
+  "version": "0.2.0",
+  "description": "Reusable Feld Labs playbooks: SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, trust and verification, shipping Next.js, product positioning, and marketing-asset generation.",
   "author": {
     "name": "Brian Feldman",
     "email": "brian@feldand.co"
   },
   "repository": "https://github.com/feld-labs/claude-skills",
   "license": "UNLICENSED",
-  "keywords": ["saas", "billing", "stripe", "multi-tenant", "positioning", "marketing", "playbook"]
+  "keywords": ["saas", "billing", "stripe", "multi-tenant", "white-label", "seo", "aeo", "geo", "trust", "verification", "nextjs", "positioning", "marketing", "playbook"]
 }
