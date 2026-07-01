@@ -2,6 +2,16 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.3.0 (2026-07-01)
+- Added three technical playbooks distilled from the Confetti Albums build:
+  - **optional-integrations**: the dependency-free "dormant until keyed" pattern (no-op until the env
+    key is set) for email/analytics/monitoring; ship the wiring before the account exists.
+  - **supabase-migration-verify**: verify which migrations are live by REST-probing a distinctive
+    column/table per migration (service key only, no psql), reading the `42703` errors.
+  - **release-qa-plan**: gates-first QA structure (isolation, money path, regression, onboarding) with
+    assertions pulled from code; composes multi-tenant-isolation + saas-billing.
+- Cross-linked **saas-billing** to optional-integrations, release-qa-plan, and supabase-migration-verify.
+
 ## 0.2.0 (2026-07-01)
 - Added **design-and-ui-craft**, a core design skill with a broad trigger, Feld Labs house rules
   (match existing tokens, no em-dashes, accessibility, verify by eye, restraint, honest copy), a
