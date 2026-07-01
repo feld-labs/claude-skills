@@ -75,3 +75,10 @@ of `${timestamp}.${rawBody}` compared timing-safely to the `v1` signature, withi
 - [ ] Test/live switch by key prefix; secrets in env; rotate on exposure
 - [ ] Metering: app decrements, billing tops up, 402 on shortfall
 - [ ] Test matrix passes in test mode before going live
+
+## Related skills
+- The dependency-free `fetch` client here is one instance of the [[optional-integrations]] pattern
+  (dormant until keyed): the same discipline used for email, analytics, and monitoring.
+- The money path is a release gate; see [[release-qa-plan]] for how it sits in the QA plan.
+- If entitlement fields live behind a recent migration, confirm it is applied with
+  [[supabase-migration-verify]] before trusting the grant.
