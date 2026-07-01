@@ -8,6 +8,7 @@ One source of truth, synced to every machine via the plugin system.
 - **multi-tenant-isolation**: scope-by-tenant patterns, session context, legacy compat, the isolation release gate.
 - **product-positioning**: find the real buy reason, value-led hero, de-emphasize hype.
 - **marketing-asset-gen**: OG images and product screenshots via headless browser from the app's own CSS, privacy-blurred.
+- **design-and-ui-craft**: the core design brain. House rules + priority routing to three vendored craft playbooks (Emil Kowalski, Impeccable, Taste). Read it whenever sharpening how anything looks, feels, or behaves. Vendored copies are pinned and reviewed quarterly (see its `VENDORED.md`).
 
 ## Install (per machine, once)
 ```
