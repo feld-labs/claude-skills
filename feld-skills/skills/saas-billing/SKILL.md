@@ -45,24 +45,35 @@ Get that contract right and the two sides can be built in parallel.
 - Define the unit precisely ("1 credit = 1 finalized item"). The **app decrements** on use; **billing
   only ever tops up**. Check balance before the action (return 402 if short), decrement after success.
 
-## 5. Test vs live
+## 5. Fees: who pays, and keep the total honest
+When a fee (card processing, FX) can be **passed to the buyer** or **absorbed by the seller/operator**,
+record both sides distinctly so nothing is silently lost:
+- **Passed:** a line in the buyer's total (grossed up so the provider's cut nets out).
+- **Absorbed:** 0 in the buyer's total, stored separately (e.g. `fee_absorbed_cents`) as the operator's
+  cost — it comes out of their payout, not the order. Surface it as a cost line on their side. Keeping it
+  OUTSIDE the order total means your `total = sum(parts)` reconciliation is unchanged.
+- **Constraint drift is a real outage:** if a DB check enforces `total = sum(parts)`, EVERY fee grossed
+  into the total must be in that check. Change the fee model and its reconciliation constraint in the SAME
+  migration — a stale check rejects every order (a 500 on the whole money path).
+
+## 6. Test vs live
 - Mirror the catalog in **test mode** (same lookup_keys). Switch by **key prefix**: if the secret key
   starts with the test prefix, load the test price manifest; else live.
 - Webhook secrets differ per mode (env-driven). **Never point production at a test secret** or vice versa.
 - QA locally with the provider's CLI listener (it issues its own local signing secret). Use a throwaway
   test account so QA never touches real data.
 
-## 6. Security (non-negotiable)
+## 7. Security (non-negotiable)
 - Secret key + webhook secret live in env only (gitignored). Only the publishable key and price IDs
   may reach the browser. If a secret is ever pasted in chat or a log, rotate it.
 - Server maps sku -> price; reject unknown skus. Idempotency keyed on the provider event id.
 
-## 7. Dependency-free option
+## 8. Dependency-free option
 You usually do not need the provider's SDK. A tiny `fetch` client plus Node `crypto` for HMAC webhook
 verification keeps deploys simple (fewer deps). Checkout = a form-encoded POST; verification = HMAC-SHA256
 of `${timestamp}.${rawBody}` compared timing-safely to the `v1` signature, within a tolerance window.
 
-## 8. Test matrix (run before launch)
+## 9. Test matrix (run before launch)
 - Each one-time sku flips the exact entitlement field; each subscription event transitions status.
 - Idempotency: re-deliver an event -> no double grant (credits not doubled).
 - Declined card -> nothing granted. Tampered signature -> 400, nothing granted.
@@ -74,6 +85,7 @@ of `${timestamp}.${rawBody}` compared timing-safely to the `v1` signature, withi
 - [ ] Webhook: signature-verified, raw body, process-then-mark idempotent
 - [ ] Test/live switch by key prefix; secrets in env; rotate on exposure
 - [ ] Metering: app decrements, billing tops up, 402 on shortfall
+- [ ] Fees: passed vs absorbed recorded distinctly; reconciliation check includes every fee in the total
 - [ ] Test matrix passes in test mode before going live
 
 ## Related skills
