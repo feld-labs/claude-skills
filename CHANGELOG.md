@@ -2,6 +2,12 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.4.1 (2026-07-02)
+- **saas-billing: fee handling.** New "Fees: who pays, and keep the total honest" section on
+  passing vs absorbing a fee (record both sides; keep the absorbed cost outside the reconciled
+  order total) and the constraint-drift trap (a `total = sum(parts)` check must include every fee,
+  or a stale check 500s the whole money path). From the Gulf Coast Stays card-fee pass/absorb work.
+
 ## 0.4.0 (2026-07-01)
 Distilled from the Gulf Coast Stays build (white-label vacation-rental marketplace), plus a
 build-methodology structure. (Supersedes the earlier PR that targeted 0.2.0 before `main` moved.)
