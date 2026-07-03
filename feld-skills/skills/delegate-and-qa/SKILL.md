@@ -27,6 +27,9 @@ Refuse-to-delegate heuristics (any one is disqualifying):
 - Acceptance cannot be verified by a command or a diff read. If you cannot check it, do not delegate it.
 - A wrong result is expensive or hard to detect (data migrations on live DBs, security boundaries).
 - The task is under ~5 minutes of work. Agents start cold; spawn overhead eats the savings.
+- The task needs live/production credentials or live external API calls. Per global policy
+  (CLAUDE.md, Secrets and privacy), that work does not run at all without Brian's per-run sign-off,
+  delegated or not.
 
 ## Step 2. Write the delegation brief
 
@@ -37,7 +40,9 @@ OBJECTIVE: <1-2 sentences>
 CONTEXT: read <plan doc / spec file> first. Working dir: <path>. Branch from <base> as <taxonomy>/<slug>.
 FILES: <exact files to touch; everything else is off-limits>
 CONSTRAINTS: no em-dashes anywhere; no secrets in code or docs; never commit to main;
-  match surrounding code style; do not install new dependencies without listing them in the report.
+  match surrounding code style; do not install new dependencies without listing them in the report;
+  run ONLY the VERIFY commands plus read-only git/file inspection (never anything that could reach
+  a live external API or use production credentials).
 ACCEPTANCE: <criteria, each verifiable by a command>
 VERIFY: run <exact commands: tests, typecheck, lint> and include real output in your report.
 REPORT BACK: files changed, commands run with output, anything you could not do and why.
@@ -47,6 +52,11 @@ If the plan doc (PLAN-*.md) already carries acceptance criteria, point at the ph
 restating it, but still pin FILES and VERIFY explicitly.
 
 ## Step 3. Spawn mechanics
+
+Before every spawn (cheap, prevents duplicate work when parallel sessions share a repo):
+`git fetch`, then check open PRs, `git worktree list`, and unmerged `origin/*` branches; never spawn
+work that overlaps any of them. Push the agent's branch name at spawn as the claim (commits can stay
+local until QA). One merge authority per repo; a second active session halts at PR-open.
 
 - Agent tool, `subagent_type: general-purpose`, `model: "sonnet"` or `"haiku"` per triage.
 - Code changes get `isolation: "worktree"` so the agent cannot dirty your working tree.
@@ -65,8 +75,12 @@ verify everything cheap to verify.
 2. **Re-run verification yourself:** tests, typecheck, lint. The agent's pasted output is a claim, not evidence.
 3. **Check acceptance criteria one by one** against the brief.
 4. **House-rule sweep:** grep the diff for em-dashes and secret-shaped strings
-   (`sk_live|sk_test|password.*=|BEGIN.*PRIVATE`); confirm branch taxonomy; confirm nothing landed on main.
-5. Verdict:
+   (`sk_live|sk_test|password.*=|BEGIN.*PRIVATE`); confirm branch taxonomy; confirm nothing landed on
+   main; confirm from the agent's report that it ran only the VERIFY whitelist (a command outside it
+   is an automatic bounce, even if the diff is good).
+5. **Duplicate sweep:** re-fetch and confirm the work does not overlap something merged or opened
+   while the agent ran (parallel sessions move fast); if it does, trim to the true delta before PR.
+6. Verdict:
    - **Accept**: criteria met, checks green. Fold into the PR flow (ai-git-ops).
    - **Patch**: small issues (naming, a missed edge, comment noise). Fix them yourself; cheaper than a round trip.
    - **Bounce once**: material gaps. SendMessage the same agent with numbered findings. One bounce
