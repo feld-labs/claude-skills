@@ -2,6 +2,14 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.5.0 (2026-07-02)
+- **New skill: delegate-and-qa.** The execution leg of the plan-and-handoff pattern: a triage
+  rubric that assigns each task the cheapest model that cannot fail it (Haiku mechanical, Sonnet
+  well-scoped builds, capable model for judgment or high blast radius), a standalone delegation
+  brief format, spawn mechanics (worktree isolation, SendMessage over respawn, one-bounce rule),
+  and a mandatory senior-model QA gate (read the diff, re-run verification, house-rule sweep).
+  Formalized from the Lucid Arc takeover session.
+
 ## 0.4.1 (2026-07-02)
 - **saas-billing: fee handling.** New "Fees: who pays, and keep the total honest" section on
   passing vs absorbing a fee (record both sides; keep the absorbed cost outside the reconciled

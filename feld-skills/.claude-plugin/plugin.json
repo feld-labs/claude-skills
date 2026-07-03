@@ -1,12 +1,42 @@
 {
   "name": "feld-skills",
-  "version": "0.4.1",
-  "description": "Reusable Feld Labs playbooks: a building-products master + marketplace layer, SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, trust and verification, shipping Next.js, product positioning, marketing-asset generation, design and UI craft, optional integrations, Supabase migration verification, and release QA planning.",
+  "version": "0.5.0",
+  "description": "Reusable Feld Labs playbooks: a building-products master + marketplace layer, SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, trust and verification, shipping Next.js, product positioning, marketing-asset generation, design and UI craft, optional integrations, Supabase migration verification, release QA planning, and delegate-and-QA model routing.",
   "author": {
     "name": "Brian Feldman",
     "email": "brian@feldand.co"
   },
   "repository": "https://github.com/feld-labs/claude-skills",
   "license": "UNLICENSED",
-  "keywords": ["build", "product", "prd", "saas", "billing", "stripe", "marketplace", "multi-tenant", "white-label", "seo", "aeo", "geo", "trust", "verification", "nextjs", "positioning", "marketing", "design", "ui", "ux", "integrations", "supabase", "migrations", "qa", "testing", "playbook"]
+  "keywords": [
+    "build",
+    "product",
+    "prd",
+    "saas",
+    "billing",
+    "stripe",
+    "marketplace",
+    "multi-tenant",
+    "white-label",
+    "seo",
+    "aeo",
+    "geo",
+    "trust",
+    "verification",
+    "nextjs",
+    "positioning",
+    "marketing",
+    "design",
+    "ui",
+    "ux",
+    "integrations",
+    "supabase",
+    "migrations",
+    "qa",
+    "testing",
+    "playbook",
+    "delegation",
+    "agents",
+    "model-routing"
+  ]
 }

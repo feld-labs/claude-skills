@@ -21,6 +21,7 @@ One source of truth, synced to every machine via the plugin system.
 - **optional-integrations**: the dependency-free "dormant until keyed" pattern for optional third-party integrations (email, analytics, monitoring). Ship the wiring before the account exists; go live with one env var. `saas-billing`'s Stripe client is an instance of it.
 - **supabase-migration-verify**: prove which DB migrations are actually applied to a live Supabase by probing a distinctive column/table per migration through the REST API (when you have only the service key, no psql).
 - **release-qa-plan**: structure a QA plan by risk, release gates first (isolation, money path, regression, onboarding), then feature areas, with assertions pulled from code. Composes `multi-tenant-isolation` + `saas-billing`.
+- **delegate-and-qa**: task triage and model assignment (Haiku for mechanical, Sonnet for well-scoped builds, capable model for judgment), the standalone delegation brief, spawn mechanics, and the mandatory senior-model QA gate. The execution leg of plan-and-handoff.
 - **product-positioning**: find the real buy reason, value-led hero, de-emphasize hype.
 - **marketing-asset-gen**: OG images and product screenshots via headless browser from the app's own CSS, privacy-blurred.
 - **design-and-ui-craft**: the core design brain. House rules + priority routing to three vendored craft playbooks (Emil Kowalski, Impeccable, Taste). Read it whenever sharpening how anything looks, feels, or behaves. Vendored copies are pinned and reviewed quarterly (see its `VENDORED.md`).
