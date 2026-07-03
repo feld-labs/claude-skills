@@ -2,6 +2,14 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.5.1 (2026-07-02)
+- **delegate-and-qa: safety rails.** (1) Live-credentials rule: tasks needing live/production
+  credentials or live external API calls (Stripe etc.) are never delegable and never run without
+  Brian's per-run sign-off; agent briefs whitelist commands; QA gains a live-API sweep. (2)
+  Multi-session coordination: fetch + review open PRs/worktrees/branches before every spawn, pushed
+  branch names as the claim ledger, one merge authority per repo, and a post-run duplicate sweep.
+  From the Lucid Arc parallel-session collision on 2026-07-02.
+
 ## 0.5.0 (2026-07-02)
 - **New skill: delegate-and-qa.** The execution leg of the plan-and-handoff pattern: a triage
   rubric that assigns each task the cheapest model that cannot fail it (Haiku mechanical, Sonnet
