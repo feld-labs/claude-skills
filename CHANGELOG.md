@@ -2,6 +2,16 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.6.0 (2026-07-06)
+- **New skill: in-house-observability.** Error monitoring you own, no third-party service required.
+  Every error goes to the console AND a Supabase `error_log` table via a `log_error()` RPC (on by
+  default); Sentry/webhook/OTel stay optional forwarders. Consistent cross-project schema, fingerprint
+  grouping (a burst of one error is one row with a count, not thousands), PII-safe context allow-list,
+  a never-throws module, and a define/identify/fix triage workflow for build + bug-squash phases.
+  Ships copy-paste `references/monitor.js` + `references/error_log.sql`. Includes a graduation path to
+  OpenTelemetry/a vendor. Instance of [[optional-integrations]]; informed by OTel practice
+  (Dash0/o11y-dev) but kept lightweight. Extracted from the Confetti Albums reference implementation.
+
 ## 0.5.1 (2026-07-02)
 - **delegate-and-qa: coordination + command whitelist (procedure only).** Pre-spawn check (fetch,
   open PRs, worktrees, unmerged branches; pushed branch name = task claim; one merge authority per
