@@ -18,7 +18,16 @@ Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each ch
   verify every finding in-source, handle secrets by key-name-not-value, rank + split code fixes from
   live-credential/destructive actions, and gate with an independent reviewer (never self-merge).
   Composes with [[multi-tenant-isolation]], [[optional-integrations]], [[saas-billing]],
-  [[trust-and-verification]], [[delegate-and-qa]], and the built-in `/security-review`.
+  [[trust-and-verification]], [[delegate-and-qa]], and the built-in `/security-review`. Ships three
+  reference files for launch-grade depth: `production-hardening.md` (security headers, transport,
+  session hardening, file uploads, DB least-privilege + encryption, audit logging, business-logic
+  abuse, compliance, CI/CD), `ai-endpoint-security.md` (token-aware rate limiting, cost caps + global
+  spend circuit breaker, system-prompt isolation, indirect-injection defence, output PII/leakage/XSS
+  filtering, per-tenant AI isolation, gating AI actions), and `attack-path-chaining.md` (defensive
+  adversary-emulation: chain confirmed findings into ranked attack paths with detection gaps + fixes).
+  The reference checklists are adapted, in our own words, from the open-source `seatrial` audit
+  skill-set (github.com/Lagunaswift/SeaTrails, MIT, James Swift) and OWASP practice, and the skill
+  points to seatrial for a heavier multi-lens automated audit.
 
 ## 0.6.0 (2026-07-06)
 - **New skill: in-house-observability.** Error monitoring you own, no third-party service required.

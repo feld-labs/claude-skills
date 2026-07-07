@@ -33,7 +33,13 @@ email), [[saas-billing]] (webhooks, money path), and [[trust-and-verification]] 
    **code fixes** (an agent can do them, offline, on a branch) from **human/live actions** (rotating a
    key, running a migration against the real DB, provisioning a provider, purging git history). Never
    do the live-credential or destructive-history actions yourself without explicit sign-off.
-6. **Gate the fix.** Security fixes get an INDEPENDENT reviewer and are never self-merged (see
+6. **Chain the findings before you rank them.** Atomic findings undersell the risk. Three "mediums"
+   that chain (register without verification, then an export with no ownership check, then another
+   user's record) are one Critical breach no single check names. After the checklist, run the
+   attack-path synthesis in `references/attack-path-chaining.md`: pick the attacker's goals, trace the
+   kill chain from entry to impact through the CONFIRMED findings, ask whether each step would even be
+   detected, and pair each path with the one fix that breaks it.
+7. **Gate the fix.** Security fixes get an INDEPENDENT reviewer and are never self-merged (see
    [[delegate-and-qa]]). Verify fixes offline and mocked, never against live credentials.
 
 ## Tier 0: the doors that are just open (check these first)
@@ -164,6 +170,25 @@ State plainly what could not be verified offline.
   return only templates); `git grep -nE "\\?\\? \"\""` for empty-secret fallbacks.
 - **AI actions:** find every LLM call site and trace what it can do with its output (SQL, tool calls,
   sends). Gate each server-side.
+
+## Go deeper (reference files)
+
+The tiers above are the fast standing checklist. For a launch-grade or full audit, load the reference
+files, each a focused checklist:
+- **`references/production-hardening.md`** - the boring-but-load-bearing controls: security headers,
+  transport, session hardening, file uploads, DB least-privilege + encryption, audit logging,
+  business-logic abuse (coupon/trial/subscription), compliance, and deployment (CI/CD, SAST).
+- **`references/ai-endpoint-security.md`** - everything an AI feature adds: token-aware rate limiting,
+  cost caps + a global spend circuit breaker, system-prompt isolation, indirect-injection defence,
+  output PII/leakage/XSS filtering, per-tenant AI isolation, and gating AI-triggered actions.
+- **`references/attack-path-chaining.md`** - the defensive adversary-emulation pass that chains
+  confirmed findings into ranked attack paths and pairs each with its detection gap and fix.
+
+For a heavier, multi-lens automated audit (security plus privacy, scaling, dependencies,
+infrastructure, compliance, and more, with adversarial verification and de-duplication), run the
+open-source **`seatrial`** skill-set (github.com/Lagunaswift/SeaTrails, MIT, James Swift), which several
+of these references are adapted from. Treat its output the same way: verify every finding in-source, a
+clean pass only means those lenses did not fire.
 
 ## The gate
 
