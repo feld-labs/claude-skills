@@ -2,6 +2,33 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.7.0 (2026-07-06)
+- **New skill: security-review.** The portfolio-wide vulnerability checklist plus a repeatable audit
+  method, distilled from a real Lucid Arc audit and the "5 holes in every vibecoded app" parts 1 and 2.
+  Three tiers: Tier 0 open doors (auth on every endpoint, IDOR/authorization scoping, isolation
+  actually on, no secrets in repo/client, baseline rate limits); Tier 1 "you turned it on and it still
+  leaks" (RLS policy holes that join to an open table or trust a user-set column, storage-bucket
+  listing, pre-auth money pumps where per-user limits fail, SSRF to the cloud metadata endpoint, and
+  prompt injection / AI that takes actions); Tier 2 Feld scars (secrets committed AND tracked,
+  password-reset token returned in the response = account takeover, empty signing-secret fallback
+  `?? ""`, plaintext provider keys at rest, PII redaction done only client-side, `sameSite:none`, dead
+  starter-template scaffolding as live attack surface). Encodes the SSO-only standard as the structural
+  fix for the entire password/credential class (having password auth at all is itself a finding). Method
+  section: audit the deployed branch not a stale checkout, two independent passes (one pass under-covers),
+  verify every finding in-source, handle secrets by key-name-not-value, rank + split code fixes from
+  live-credential/destructive actions, and gate with an independent reviewer (never self-merge).
+  Composes with [[multi-tenant-isolation]], [[optional-integrations]], [[saas-billing]],
+  [[trust-and-verification]], [[delegate-and-qa]], and the built-in `/security-review`. Ships three
+  reference files for launch-grade depth: `production-hardening.md` (security headers, transport,
+  session hardening, file uploads, DB least-privilege + encryption, audit logging, business-logic
+  abuse, compliance, CI/CD), `ai-endpoint-security.md` (token-aware rate limiting, cost caps + global
+  spend circuit breaker, system-prompt isolation, indirect-injection defence, output PII/leakage/XSS
+  filtering, per-tenant AI isolation, gating AI actions), and `attack-path-chaining.md` (defensive
+  adversary-emulation: chain confirmed findings into ranked attack paths with detection gaps + fixes).
+  The reference checklists are adapted, in our own words, from the open-source `seatrial` audit
+  skill-set (github.com/Lagunaswift/SeaTrails, MIT, James Swift) and OWASP practice, and the skill
+  points to seatrial for a heavier multi-lens automated audit.
+
 ## 0.6.0 (2026-07-06)
 - **New skill: in-house-observability.** Error monitoring you own, no third-party service required.
   Every error goes to the console AND a Supabase `error_log` table via a `log_error()` RPC (on by
