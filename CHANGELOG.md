@@ -2,6 +2,19 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.8.1 (2026-07-10)
+- **content-engine: internal linking and credibility rules** (Brian review feedback from the
+  Lucid Arc wave-2 content PR). New non-negotiable writing rule checked at the QA gate: every
+  piece is a node in a topical-authority graph. Every post inline-links its reference page and
+  carries a related-links block (reference page + cluster sibling + one adjacent piece);
+  sibling formats cross-link so each topic's cluster closes around its definition page;
+  pillar/listicle posts link every concept they enumerate (definition page + deeper how-to);
+  concept-named anchor text; no orphans (a new piece ships with at least one inbound link in
+  the same PR); method claims cite the methodology page; external citations sparing and
+  accurate. Documents the engineering prerequisite (safe inline-link subset + related section
+  in the post renderer) and the scripted-retrofit pattern with hard assertions. Checklist gains
+  a linking pass.
+
 ## 0.8.0 (2026-07-10)
 - **New skill: content-engine.** The content operation playbook distilled from the Lucid Arc
   content build (strategy doc + 15 metric reference pages + pillar posts + a 27-post cluster

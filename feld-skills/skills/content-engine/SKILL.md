@@ -91,6 +91,22 @@ search volume). The calendar is the production queue for every later wave.
   (open with the failure, inputs, walkthrough, the trap, sanity check, CTA is the Lucid Arc
   "How to Calculate" shape) plus ONE full exemplar written by the strategist. Template +
   exemplar is what makes cheap delegation safe.
+- **Internal linking and credibility (non-negotiable, checked at the QA gate)**: every piece is
+  a node in a topical-authority graph, and the link structure is the credibility signal both
+  search and answer engines read. Rules: (1) every post inline-links its reference page (the
+  CTA paragraph at minimum) AND carries a small related-links block (reference page + its
+  format-cluster sibling + one adjacent piece); (2) sibling formats always cross-link, so each
+  topic's cluster closes around its reference page; (3) listicle/pillar posts link every
+  concept they enumerate, both the definition page and the deeper how-to piece; (4) anchor
+  text names the concept, never "click here"; (5) no orphans: a new piece ships in the same PR
+  with at least one link pointing TO it from an existing piece; (6) method claims cite the
+  methodology/reference page; (7) external citations only to named authoritative sources,
+  accurately represented, sparing, never a substitute for the internal cluster. Engineering
+  prerequisite: the post renderer must support a safe inline-link subset (internal paths via
+  the router, https external with noopener, all other schemes rendered as plain text) plus a
+  related-links section; if it does not, that is the one code ticket the first linked wave
+  carries. Retrofits scale as plain code: fix exact CTA phrases and inject related blocks by
+  script with hard assertions, hand-weave only the flagship pillar posts.
 
 ## 4. The production pipeline (model/agent routing)
 
@@ -152,6 +168,8 @@ Match the model to the phase; a token spent above the task is waste, below it is
 - [ ] Every piece specced (slug, title, date, tags) BEFORE any writer starts.
 - [ ] Writers briefed with template + exemplar + source-of-truth; one disjoint file each.
 - [ ] QA gate run on every batch: voice, accuracy contract, benchmark honesty, dash sweep.
+- [ ] Linking pass: every piece links its reference page + sibling + one adjacent; no orphans;
+      pillar posts link everything they enumerate.
 - [ ] Integration single-track: module + sitemap + glossary + CHANGELOG in one PR.
 - [ ] typecheck + tests + build + em-dash sweep green before the PR.
 - [ ] PR flagged for the named author's review; not self-merged.
