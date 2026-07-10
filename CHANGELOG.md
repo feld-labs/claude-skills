@@ -2,7 +2,24 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
-## 0.7.0 (2026-07-06)
+## 0.8.0 (2026-07-10)
+- **New skill: content-engine.** The content operation playbook distilled from the Lucid Arc
+  content build (strategy doc + 15 metric reference pages + pillar posts + a 27-post cluster
+  backlog produced by a Sonnet writer fleet). Covers: the two-track content-as-data repository
+  (reference pages + editorial, glossary/sitemap updated with every add); the scoping phase as
+  five explicit decisions (positioning spine with the "could a competitor publish this
+  unchanged" test, an explicit competitive model choice, the N-format topic-cluster backbone as
+  a status table, journey-mapped editorial pillars that target the journey competitors ignore,
+  and a dated 90-day calendar that doubles as the production queue); the writing rules (voice,
+  GEO, the accuracy contract tracing every claim to a named source-of-truth doc, benchmark
+  honesty banning proprietary-data claims until a corpus exists, and template + exemplar per
+  recurring format); and the production pipeline with model routing (strategist scopes, writes
+  the differentiated backbone + exemplars, and runs the QA gate; Sonnet writer agents batch-draft
+  cluster posts into disjoint files from standalone briefs with slug/title/date fixed by the
+  orchestrator; Haiku or inline for mechanical surfaces; integration always single-track into
+  the shared module with sitemap + glossary + CHANGELOG in one never-self-merged PR). Composes
+  with [[seo-aeo-geo]] (technical discoverability), [[product-positioning]] (spine derivation),
+  and [[delegate-and-qa]] (delegation mechanics).
 - **New skill: security-review.** The portfolio-wide vulnerability checklist plus a repeatable audit
   method, distilled from a real Lucid Arc audit and the "5 holes in every vibecoded app" parts 1 and 2.
   Three tiers: Tier 0 open doors (auth on every endpoint, IDOR/authorization scoping, isolation
