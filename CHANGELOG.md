@@ -2,6 +2,24 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.9.0 (2026-07-10)
+- **New skill: landing-page-revamp.** The audit-to-relaunch procedure for any product's public
+  landing surface, distilled from the Lucid Arc public-site program (nav unification #100,
+  Justin-Welsh-voice rewrite #102, content hub #103, trust pages #106, pricing ladder #109).
+  Six steps: (0) written audit with the cover-the-logo message test, audience test, structure
+  drift, honesty scan, and a before screenshot; (1) lock positioning inputs before any copy
+  (spine + one-line contrast via product-positioning, ICP map, honesty constraints incl. what
+  must not be overclaimed, B2B verification-first vs B2C felt-moment-first stance); (2) the
+  proven eight-section architecture in conversion order (finding-first hero, honest credibility
+  strip, how-it-works in 3, differentiated-angle shown-not-asserted, who-it's-for per ICP,
+  pricing clarity with server-side fences, FAQ as FAQPage JSON-LD, final CTA) on one shared
+  nav/footer; (3) house voice rules; (4) discoverability + trust + internal-link wiring
+  (composes seo-aeo-geo and content-engine); (5) design pass via design-and-ui-craft; (6) gate
+  with a real production build, link-click and mobile passes, before/after PR, human merge.
+  Includes model routing per phase (strategist copy brief, Sonnet page builds on disjoint
+  files, anything touching pricing/auth escalates to Opus + independent review). First target:
+  the Confetti Albums landing page.
+
 ## 0.8.1 (2026-07-10)
 - **content-engine: internal linking and credibility rules** (Brian review feedback from the
   Lucid Arc wave-2 content PR). New non-negotiable writing rule checked at the QA gate: every
