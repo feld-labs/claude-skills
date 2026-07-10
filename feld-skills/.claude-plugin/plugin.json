@@ -1,6 +1,6 @@
 {
   "name": "feld-skills",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Reusable Feld Labs playbooks: a building-products master + marketplace layer, SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, trust and verification, shipping Next.js, product positioning, marketing-asset generation, design and UI craft, optional integrations, in-house observability and error monitoring, Supabase migration verification, release QA planning, and delegate-and-QA model routing.",
   "author": {
     "name": "Brian Feldman",

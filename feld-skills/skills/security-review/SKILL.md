@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: Read before shipping any app, making a repo or surface public, or when auditing an existing app for vulnerabilities. A portfolio-wide security checklist plus a repeatable audit method. Covers the obvious-open holes (missing auth, no isolation, secrets in the repo) AND the "you turned it on and it still leaks" tier (RLS policy holes, bucket listing, pre-auth money pumps, SSRF, prompt injection / AI that takes actions), plus the specific scars from real Feld Labs audits (secrets tracked in git, password-reset tokens returned in the response, LLM-to-SQL cross-tenant leaks, empty signing-secret fallbacks, plaintext provider keys, client-only PII redaction). Use when adding auth, payments, file uploads, an AI feature, or a public form, and as the gate before launch. Pairs with the built-in /security-review and with multi-tenant-isolation, optional-integrations, and trust-and-verification.
+description: Read before shipping any app, making a repo or surface public, or when auditing an existing app for vulnerabilities. A portfolio-wide security checklist plus a repeatable audit method. Covers the obvious-open holes (missing auth, no isolation, secrets in the repo) AND the "you turned it on and it still leaks" tier (RLS policy holes incl. migrations vs live state and role-scoped sensitive columns, PostgREST filter injection, bucket listing, pre-auth money pumps, per-payer cap and role-gate holes, SSRF, prompt injection / AI that takes actions, trusting client-controlled request metadata like the Host header for auth or redirect decisions), plus the specific scars from real Feld Labs audits (secrets tracked in git, password-reset tokens returned in the response, LLM-to-SQL cross-tenant leaks, empty signing-secret fallbacks, plaintext provider keys, client-only PII redaction, fail-open tenant scoping, spoofable rate-limit keys, webhook idempotency TOCTOU). Use when adding auth, payments, file uploads, an AI feature, or a public form, and as the gate before launch. Pairs with the built-in /security-review and with multi-tenant-isolation, optional-integrations, and trust-and-verification.
 ---
 
 # Security Review Playbook
@@ -41,6 +41,10 @@ email), [[saas-billing]] (webhooks, money path), and [[trust-and-verification]] 
    detected, and pair each path with the one fix that breaks it.
 7. **Gate the fix.** Security fixes get an INDEPENDENT reviewer and are never self-merged (see
    [[delegate-and-qa]]). Verify fixes offline and mocked, never against live credentials.
+8. **Verify live infra state, not just code**, for anything whose real behavior lives outside the
+   repo (RLS enabled? bucket public? which reverse-proxy vhost is default? which payment methods are
+   enabled?). The repo can lie about production. Confirm against the live system with the owner's
+   per-run sign-off for anything touching prod.
 
 ## Tier 0: the doors that are just open (check these first)
 
@@ -51,6 +55,11 @@ email), [[saas-billing]] (webhooks, money path), and [[trust-and-verification]] 
   [[multi-tenant-isolation]].
 - **Isolation is actually on.** RLS enabled where you rely on it; app-level tenant filters on every
   query where you rely on those.
+- **No PostgREST/Supabase-REST filter injection.** Apps that build a query string by concatenation
+  (`` `table?col=eq.${clientId}` ``) are injectable: `&`, `=`, `(`, `)`, `,` are legal unencoded and
+  let an attacker append filters, `or=(...)`, or `select=` to widen the query or read extra columns
+  (e.g. raw biometric embeddings). Validate every client value against a strict id pattern AND wrap it
+  in `encodeURIComponent` before it enters the query string.
 - **No secrets in the repo or the client bundle.** No API keys, tokens, service-account JSON,
   `.env`, `.pem`/`.key`. Check the client build too (anything shipped to the browser is public).
 - **Some rate limiting exists** on auth and expensive paths (then see Tier 1 #3 for why per-user is
@@ -71,6 +80,22 @@ Check: for each policy/query path, ask "who exactly does this let in, and can th
 value I check?" Denormalize the tenant id onto child tables so filters never depend on a join to a
 possibly-open table.
 
+(a) **Codify RLS in migrations, not just the dashboard.** A table created by a SQL migration does
+not auto-enable RLS; every table added since the last RLS pass is a candidate gap. Grep migrations
+for `enable row level security` and diff against the full table list. Prod may have RLS on via the
+dashboard while migrations don't, so a rebuild or a new environment ships wide open.
+
+(b) **Confirm live state, not just code.** Probe with the anon/publishable key (a populated table
+returning zero rows to anon means RLS is on; rows returned means it is exposed), or run the
+provider's security advisor (e.g. Supabase `get_advisors`). Migrations alone don't prove prod truth.
+Do this only with the owner's per-run sign-off, it touches production.
+
+(c) **Policy scoped by membership but not by role is a hole.** A policy like `account_id in (select
+my_account_ids())` lets the lowest-privilege member (a viewer) read every column, including sensitive
+ones. Sensitive columns (third-party OAuth tokens, secrets, PII) must be service-role-only (RLS on,
+no authenticated policy; the server reads them with the service key). Never store a third-party OAuth
+token in a client-reachable table.
+
 **2. Anyone can LIST your storage bucket.**
 Individual file links work fine, so nobody checks the drawer. But if the bucket is public and
 **listing is allowed**, a stranger enumerates every file (receipts, IDs, profile pics) without
@@ -88,6 +113,12 @@ Check: list every route that **costs you money or sends something** and can be h
 in**. Rate-limit those by **IP** (not just user), add a captcha/proof-of-work on public forms, and
 set a **hard global daily spend cap** so worst case is capped, not infinite. (Real example: a public
 lead-capture form that inserts a row and emails the owner on every submit, with no throttle.)
+- **Caps must be per-payer, not per-resource.** A free-tier cap keyed to a resource the user can
+  create for free (per-event, per-project) is defeated by creating more of them; key the cap to the
+  account/user, not the resource.
+- **Role-gate expensive actions.** Anything that spends the owner's money or compute (a scan, an
+  AI/vision call, a build) must check the ACTOR's role; a viewer invited only to browse must not be
+  able to trigger it.
 
 **4. Your server will fetch a URL an attacker gives it (SSRF).**
 Any "import from link," "screenshot this site," "add image by URL," or webhook-tester feature where
@@ -112,6 +143,20 @@ substring-match), allowlist the tables it can touch, enforce the tenant filter f
 structure, run under a least-privilege read-only role, and route anything outside the pre-vetted set
 through a **human-in-the-loop approval** step. Never let model output reach a privileged action
 un-gated.
+
+**6. Trusting client-controlled request metadata.**
+An app used `req.headers.host` matched against `localhost`/`127.0.0.1` to SKIP authentication (a dev
+shortcut). A client simply sends `Host: localhost` and gets full unauthenticated owner access, this
+was live-exploited in production. The Host header (and the `X-Forwarded-*` family) are client-
+controlled, never the TLS SNI. Same root cause, different blast radius: building outbound URLs
+(password-reset/invite/share links, OAuth redirects, Stripe `success_url`) from the Host header lets
+an attacker mint attacker-domain links or redirect a paying customer off-site.
+Check: grep `req.headers.host` / `req.hostname` / `req.get('host')` / `x-forwarded` and confirm NONE
+of them feeds an auth decision, a dev/environment decision, or an outbound URL. Gate dev mode on a
+server-side signal (`NODE_ENV === 'development'`), never the request. Build outbound URLs from a
+fixed server origin (`APP_URL`), not the request. Reverse-proxy angle: a proxy forwarding `$host`
+passes the spoof straight through, force the upstream Host (`proxy_set_header Host <canonical>`) or
+reject unmatched Hosts at the edge.
 
 ## Tier 2: Feld Labs scars (found in our own builds, always check)
 
@@ -147,6 +192,12 @@ un-gated.
   that capture console + network bodies, legacy OAuth callbacks that decode `state` unauthenticated,
   unused fetch/upload modules). If it is not used, delete it, do not leave it for a future refactor to
   rewire.
+- **Fail-closed scoping, never fail-open.** A query helper that omits the tenant filter when the
+  tenant id is falsy (and returns all rows instead) is a cross-tenant leak waiting for one upstream
+  bug. A missing tenant id must return empty or throw, never "all rows."
+- **Rate-limit keys must come from the trusted, proxy-derived client IP** (Express `req.ip` under
+  `trust proxy`), NOT a raw `X-Forwarded-For` header an attacker rotates to mint fresh buckets and walk
+  straight through the limit.
 
 ## Severity and output
 
@@ -170,6 +221,12 @@ State plainly what could not be verified offline.
   return only templates); `git grep -nE "\\?\\? \"\""` for empty-secret fallbacks.
 - **AI actions:** find every LLM call site and trace what it can do with its output (SQL, tool calls,
   sends). Gate each server-side.
+- **Client-controlled metadata:** `git grep -nE "req\.headers\.host|req\.hostname|req\.get\('host'\)|x-forwarded"`
+  and confirm none feeds an auth or dev-mode decision or an outbound URL.
+- **PostgREST filter injection:** `git grep -nE "\\?[a-z_]+=eq\\.\\$\\{|\`.*\\?.*=eq\\."` for
+  concatenated Supabase-REST query strings missing `encodeURIComponent`.
+- **Webhook idempotency:** `git grep -nE "stripe.*webhook|ON CONFLICT"` and confirm the event-id claim
+  is an atomic insert, not a separate check-then-mark, and that its own error path is not swallowed.
 
 ## Go deeper (reference files)
 
