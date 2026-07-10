@@ -80,6 +80,25 @@ finding, and until it is removed these apply:
 - [ ] Idempotency keys on every state-changing money operation. Stripe webhook signatures verified on
       every event (see [[saas-billing]]).
 
+## Payments and webhooks: money-path robustness
+The idempotency and signature checks above stop the obvious holes. These are the ones that only show
+up under concurrency or a provider retry, found in a real Feld Labs webhook audit:
+- [ ] Webhook idempotency is a **claim-first atomic insert** (INSERT the event id, `ON CONFLICT DO
+      NOTHING`, proceed only if the insert actually landed a row), never check-then-mark. Check-then-mark
+      has a TOCTOU window where two concurrent deliveries both pass the check and both process.
+- [ ] The idempotency-claim itself is not swallowed. A genuine duplicate returns cleanly (no throw),
+      but a transient DB error on the claim must propagate so the webhook returns 500 and the provider
+      retries. Swallowing that error 200-acks a paid event without granting anything, silently losing
+      the purchase.
+- [ ] Credit/balance mutations are atomic SQL (`col = col +/- delta` in one statement, or an RPC),
+      never read-then-patch. Read-then-patch under concurrent requests double-spends or double-grants.
+- [ ] Grants happen only on confirmed payment: gate on `payment_status === 'paid'` and handle the async
+      methods (`async_payment_succeeded` / `async_payment_failed`); `checkout.session.completed` can
+      fire before the payment is actually settled.
+- [ ] Refund reversal correlates on the right key. A refunded Charge carries `payment_intent`, not the
+      Checkout Session id. Store and match on `payment_intent`, or the reversal silently no-ops and the
+      customer keeps what they were refunded for.
+
 ## Compliance and lifecycle
 - [ ] Privacy policy published; cookie consent where applicable.
 - [ ] Self-service data export (portability) and account deletion (soft-delete recovery window).

@@ -2,6 +2,38 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.8.0 (2026-07-09)
+- **security-review: bake in learnings from two real audits (Lucid Arc + Confetti Albums).** Woven
+  into the existing tiers, not appended:
+  - New Tier 1 item, **trusting client-controlled request metadata**: a Confetti Albums finding where
+    `req.headers.host` matched against `localhost` was used to SKIP authentication, live-exploitable
+    by any client that sends `Host: localhost`. Same root cause covers building outbound URLs
+    (reset/invite/share links, OAuth redirects, Stripe `success_url`) from the Host header, and the
+    reverse-proxy angle (force the upstream Host, don't forward the client's).
+  - Tier 1 #1 (RLS) expanded with three sub-points: codify RLS in migrations (a table added by SQL
+    doesn't auto-enable RLS, diff migrations against the table list), confirm live state with the
+    anon key or the provider's security advisor (migrations alone don't prove prod truth, needs
+    sign-off), and policy-scoped-by-membership-but-not-role (a viewer reading service-role-only
+    columns like OAuth tokens).
+  - New Tier 0 item: **PostgREST/Supabase-REST filter injection** from string-concatenated query
+    params (unencoded `&=(),` lets an attacker append filters or widen `select=`).
+  - Tier 1 #3 (money pump) gained two sub-points: caps must be per-payer not per-resource, and
+    expensive actions must role-gate the actor, not just rate-limit the route.
+  - Two new Tier 2 scars: fail-open tenant scoping (a missing tenant id must return empty/throw, never
+    "all rows") and rate-limit keys must come from the trusted proxy-derived IP, not a spoofable raw
+    `X-Forwarded-For`.
+  - `references/production-hardening.md` gained a **Payments and webhooks: money-path robustness**
+    section: claim-first atomic webhook idempotency (not check-then-mark, which TOCTOU
+    double-processes), never swallowing a transient idempotency-claim error (a genuine duplicate is
+    silent, a DB error must 500 so the provider retries), atomic credit/balance mutations (never
+    read-then-patch), gating grants on confirmed payment status including the async Stripe methods,
+    and correlating refund reversals on `payment_intent` (not the Checkout Session id).
+  - Method section gained a step: verify live infra state, not just code, for anything whose real
+    behavior lives outside the repo (RLS on? bucket public? default vhost? enabled payment methods?),
+    with the owner's per-run sign-off for anything touching prod.
+  Sourced from a live-exploited production finding in the Confetti Albums audit and RLS/webhook/money-
+  path findings in the Lucid Arc audit.
+
 ## 0.7.0 (2026-07-06)
 - **New skill: security-review.** The portfolio-wide vulnerability checklist plus a repeatable audit
   method, distilled from a real Lucid Arc audit and the "5 holes in every vibecoded app" parts 1 and 2.
