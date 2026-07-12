@@ -2,6 +2,40 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.10.0 (2026-07-12)
+
+Three new skills synthesizing the Fable-era learnings: how the strategy-tier model is actually
+used across the portfolio, distilled from the five venture-scoping runs (Waypoint, Tributary,
+Astrolabe, Motif, Lodestone), the Keel v1 program, and the Lucid Arc marketing handoff.
+
+- **New skill: venture-scoping.** The idea-to-build-ready pipeline: kill-check before any scoping
+  investment (the strategist must be willing to return KILL; a surviving verdict is recorded and
+  cited, never re-litigated); lettered phases each answering one strategic question and each
+  ending in a committed doc; beachhead ratified early and everything scoped to it; the D-number
+  decision-gate protocol (question, recommendation, default, what it gates; presented as one
+  ratification block; ratified decisions never re-derived); naming research economy (sector
+  collision + SEO decide, max one .com lookup, no trademark tracing); the hard PRD gate where
+  strategy stops; and the handoff artifact set (PRD-v1, build plan + tickets with human-only
+  actions tagged, spec frame, standalone OPUS-0 prompt, RESUME.md, memory mirror) feeding the
+  Opus SPEC-1..N then Sonnet-waves build flow.
+- **New skill: fable-sessions.** The field guide for strategy-tier sessions: what earns the
+  tokens (cross-doc synthesis into new strategy, adversarial honesty like kill-checks and
+  overclaim hunting, exemplar writing that upgrades whole Sonnet fleets, spec frames and
+  decision framing, economics-x-isolation calls) versus what wastes them (re-deriving settled
+  docs, mechanical execution, being spawned into Opus-shaped roles); the pilot-seat rule (an
+  interactive Fable session takes the senior seat: scopes, spawns fleets, runs QA gates, while
+  independent review for security-critical work stays independent); per-session value habits
+  (front-load strategy, batch decisions into gates, durable docs immediately, convert wins to
+  exemplars); and the session ops protecting an expensive session from a cutoff.
+- **New skill: program-handoff.** The tiered-delivery and baton-pass pattern: one tier = one
+  independently mergeable PR ordered by dependency, contracts fixed at tiering time, board and
+  CHANGELOG inside each tier's PR; dormant-until-keyed wiring for every missing external
+  dependency (never improvised credentials); independent review on security-adjacent tiers;
+  the human-owes register (item, what it gates, honest urgency) in RESUME.md + memory; the
+  parked-epics register with unpark triggers; end-state verification (merges confirmed landed,
+  no open PRs) and the four-section handoff message (shipped / dormant / owed / parked).
+- Plugin version 0.10.0; description and keywords updated.
+
 ## [Unreleased] - AGENTS.md sync (2026-07-10)
 
 ### Added
