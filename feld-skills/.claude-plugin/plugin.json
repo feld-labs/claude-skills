@@ -1,7 +1,7 @@
 {
   "name": "feld-skills",
-  "version": "0.10.0",
-  "description": "Reusable Feld Labs playbooks: a building-products master + marketplace layer, SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, a content-engine (strategy, writing, and agent-fleet production), landing-page revamp, trust and verification, shipping Next.js, product positioning, marketing-asset generation, design and UI craft, optional integrations, in-house observability and error monitoring, Supabase migration verification, release QA planning, security review, delegate-and-QA model routing, venture scoping (kill-check, decision gates, PRD gate), Fable-quality strategy work on Opus, and tiered program handoff.",
+  "version": "0.11.0",
+  "description": "Reusable Feld Labs playbooks: a building-products master + marketplace layer, SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, a content-engine (strategy, writing, and agent-fleet production), landing-page revamp, trust and verification, shipping Next.js, product positioning, marketing-asset generation, design and UI craft, optional integrations, in-house observability and error monitoring, Supabase migration verification, release QA planning, security review, delegate-and-QA model routing, venture scoping (kill-check, decision gates, PRD gate), Fable-quality strategy work on Opus, tiered program handoff, and the Keel product manual (financial reporting / FP&A platform).",
   "author": {
     "name": "Brian Feldman",
     "email": "brian@feldand.co"
@@ -69,6 +69,9 @@
     "red-team",
     "program",
     "handoff",
-    "resume"
+    "resume",
+    "keel",
+    "fpa",
+    "financial-reporting"
   ]
 }
