@@ -2,6 +2,9 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.11.0 - 2026-07-12
+- Add keel-product skill: product manual + technical map for feld-labs/keel (invariants, doc routing, operating and extension guides)
+
 ## 0.10.0 (2026-07-12)
 
 Three new skills synthesizing the Fable-era learnings, distilled from the five venture-scoping
