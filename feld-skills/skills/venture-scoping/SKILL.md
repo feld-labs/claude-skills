@@ -100,7 +100,8 @@ After ratification, the flow is: strategist package -> **Opus writes SPEC-1..N**
 **Sonnet waves build** against the specs -> Opus QA gate per PR ([[delegate-and-qa]]). The
 strategist's job on this venture is now done unless a genuinely new strategic question appears.
 The two most common wastes to refuse: re-deriving a ratified strategy doc, and using the strategy
-model to grind execution. See [[fable-sessions]] for the routing discipline.
+model to grind execution. This pipeline itself normally runs on Opus, not the ultra tier: see
+[[strategy-on-opus]] for the parity method and the few escalation triggers.
 
 ## Anti-patterns
 

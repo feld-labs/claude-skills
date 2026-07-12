@@ -4,9 +4,10 @@ Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each ch
 
 ## 0.10.0 (2026-07-12)
 
-Three new skills synthesizing the Fable-era learnings: how the strategy-tier model is actually
-used across the portfolio, distilled from the five venture-scoping runs (Waypoint, Tributary,
-Astrolabe, Motif, Lodestone), the Keel v1 program, and the Lucid Arc marketing handoff.
+Three new skills synthesizing the Fable-era learnings, distilled from the five venture-scoping
+runs (Waypoint, Tributary, Astrolabe, Motif, Lodestone), the Keel v1 program, and the Lucid Arc
+marketing handoff. The through-line: the expensive tier's judgment gets captured as frames and
+methods so future runs execute on cheaper models at comparable quality.
 
 - **New skill: venture-scoping.** The idea-to-build-ready pipeline: kill-check before any scoping
   investment (the strategist must be willing to return KILL; a surviving verdict is recorded and
@@ -18,15 +19,21 @@ Astrolabe, Motif, Lodestone), the Keel v1 program, and the Lucid Arc marketing h
   strategy stops; and the handoff artifact set (PRD-v1, build plan + tickets with human-only
   actions tagged, spec frame, standalone OPUS-0 prompt, RESUME.md, memory mirror) feeding the
   Opus SPEC-1..N then Sonnet-waves build flow.
-- **New skill: fable-sessions.** The field guide for strategy-tier sessions: what earns the
-  tokens (cross-doc synthesis into new strategy, adversarial honesty like kill-checks and
-  overclaim hunting, exemplar writing that upgrades whole Sonnet fleets, spec frames and
-  decision framing, economics-x-isolation calls) versus what wastes them (re-deriving settled
-  docs, mechanical execution, being spawned into Opus-shaped roles); the pilot-seat rule (an
-  interactive Fable session takes the senior seat: scopes, spawns fleets, runs QA gates, while
-  independent review for security-critical work stays independent); per-session value habits
-  (front-load strategy, batch decisions into gates, durable docs immediately, convert wins to
-  exemplars); and the session ops protecting an expensive session from a cutoff.
+- **New skill: strategy-on-opus.** The parity method for getting Fable-quality output on
+  Fable-designated tasks (positioning, pricing, PRDs, kill-checks, spec frames, roadmap
+  synthesis) from Opus, so the ultra tier is rarely needed: triage by transferability
+  (frame-following = full parity; heavy synthesis = staged decomposition; novel high-blast
+  judgment = the only class still budgeted Fable tokens, as reviewer); always run inside a
+  proven frame (the plugin's skills and saved exemplars ARE crystallized top-tier capability,
+  derived once, followed cheaply); staged synthesis (inventory -> per-source extraction, even
+  Sonnet -> compression into a decision-shaped layer -> judgment pass on Opus only, never
+  delegated further down); explicit adversarial passes replacing innate skepticism (generate /
+  red-team-to-refute / revise with a considered-rejected record; never ship single-pass
+  strategy output); divergent drafts + a judge for wide solution spaces; a written quality
+  rubric checked as a real gate (differentiation test, sourcing, live KILL, D-gates surfaced,
+  beachhead-scoped, red-team record); and the thin-Fable-layer escalation list (review gate on
+  finished Opus packages, tie-breaks, repeated structural red-team failures), with score-keeping
+  so the escalation list shrinks over time.
 - **New skill: program-handoff.** The tiered-delivery and baton-pass pattern: one tier = one
   independently mergeable PR ordered by dependency, contracts fixed at tiering time, board and
   CHANGELOG inside each tier's PR; dormant-until-keyed wiring for every missing external
