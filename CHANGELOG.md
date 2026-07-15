@@ -2,6 +2,14 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.11.1 - 2026-07-14
+- multi-tenant-isolation: add the Supabase grant trap. Supabase grants anon AND authenticated ALL
+  privileges on every new public table by default, a hole separate from RLS (TRUNCATE is not
+  RLS-gated), and a plain-Postgres isolation test never sees it. New section 9 + checklist items:
+  lock down grants by construction via one-call helpers (secure_tenant_table / secure_global_table /
+  lock_down_table), and make the isolation test mirror the Supabase default then assert the
+  locked-down posture so CI catches any table left wide open. Distilled from the live Waypoint audit.
+
 ## 0.11.0 - 2026-07-12
 - Add keel-product skill: product manual + technical map for feld-labs/keel (invariants, doc routing, operating and extension guides)
 
