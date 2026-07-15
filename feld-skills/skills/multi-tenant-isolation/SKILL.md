@@ -77,13 +77,66 @@ tenant cannot come from a login/session. Resolve it from the request host instea
 - The service role bypasses RLS, so server-side ledger/webhook writes are unaffected; only anon/authed
   client reads become tenant-scoped.
 
+## 9. Supabase: grants are a SEPARATE hole from RLS, and the default is wide open
+
+RLS decides which rows a role sees. GRANTs decide whether the role can touch the table at all. They
+are independent, and on Supabase the default is dangerous: **Supabase grants `anon` AND
+`authenticated` ALL privileges (select/insert/update/delete/truncate/references/trigger) on every new
+table in `public`, via default privileges.** You did not write that grant; Supabase did. So a fresh
+table is wide open to `anon` at the grant level, and only RLS is holding the door. Two ways that bites:
+
+- **RLS is not the only gate.** TRUNCATE (and REFERENCES/TRIGGER) are table-level and **not RLS-gated**.
+  A role with the default TRUNCATE grant is a latent hole RLS never covers. (This is the specific
+  cleanup the Matinee fix did: revoke TRUNCATE from anon/authenticated.)
+- **Your test lies if it runs on plain Postgres.** Plain Postgres has no such default, so a local/CI
+  test on vanilla Postgres reports "anon has no grants" while the live Supabase DB has given anon
+  everything. That false green is the actual bug. This happened: the grant hole was invisible until
+  someone queried `information_schema.role_table_grants` on the LIVE project.
+
+**Bake the posture into table creation, do not audit it afterward.** Make securing a table one call,
+so it is impossible to create a table without the correct grants. Ship these helpers in your first
+migration and call one per table:
+
+```sql
+-- strip Supabase's permissive defaults on any table (universal)
+create function app.lock_down_table(tbl text) returns void language plpgsql
+security invoker set search_path='' as $$ begin
+  execute format('revoke all on public.%I from anon', tbl);          -- SSO-only app: anon never
+  execute format('revoke all on public.%I from public', tbl);
+  execute format('revoke truncate, references, trigger on public.%I from authenticated', tbl);
+end $$;
+
+-- a tenant table: RLS + ownership policies + exactly the CRUD authenticated needs + lockdown
+create function app.secure_tenant_table(tbl text) returns void ... -- select/insert/update/delete
+-- a global reference table: RLS + read-only for authenticated + lockdown (writes via service role)
+create function app.secure_global_table(tbl text) returns void ...  -- select only
+```
+
+**Make the isolation test MIRROR the Supabase default so CI catches this class.** In the test
+bootstrap, before applying migrations, reproduce the hazard: `alter default privileges in schema
+public grant all on tables to anon, authenticated;`. Then assert the locked-down end state after
+migrations: `anon` has zero table privileges; `authenticated` has no TRUNCATE/REFERENCES/TRIGGER; no
+authenticated writes on global tables; and, as the inert-RLS check, `authenticated` DOES have CRUD on
+its tenant tables. Any table left with the default, or a tenant table missing its grant, fails the
+build. Without this mirror the test runs on plain Postgres and never sees the hole.
+
+Related Supabase traps to check the same day: views bypass RLS unless `security_invoker=true`; UPDATE
+needs a SELECT policy or it silently affects 0 rows; `SECURITY DEFINER` functions bypass RLS and are
+PUBLIC-executable in `public`; use `TO authenticated` + an ownership predicate, never `TO
+authenticated` alone (IDOR).
+
 ## Checklist
+- [ ] **Supabase: revoke the default anon/authenticated grants on every public table** (no anon
+      anywhere; no TRUNCATE/REFERENCES/TRIGGER for authenticated); secure tables via a one-call helper
+- [ ] **Isolation test mirrors the Supabase default grant** then asserts the locked-down posture, so a
+      table left wide open fails CI (a plain-Postgres test will not catch it)
 - [ ] Tenant id denormalized onto child tables; every query filters by it
 - [ ] Active context from session (or unspoofable domain header for white-label); re-validated per request
 - [ ] Writes set tenant id; deletes are tenant-scoped
 - [ ] RLS (if used): restrictive policy layered on ownership; child tenant id derived from parent by trigger
 - [ ] Per-tenant unique namespaces (`unique(tenant_id, slug)`), not global
 - [ ] Legacy record (if any) gated by a single `isLegacy()` guard
-- [ ] Automated 2-tenant isolation test exists and passes against a real DB (release gate)
+- [ ] Automated 2-tenant isolation test exists and passes against a real DB (release gate); on
+      Supabase it also asserts the grant posture, not just row visibility
 - [ ] Caches and share links are tenant-scoped
 - [ ] Client components receive tenant identity as props (never resolve it themselves)
