@@ -2,6 +2,9 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.12.0 - 2026-07-17
+- Replace the project-specific keel-product skill with a portable technical-documentation method skill (doc types, accuracy/audience contracts, SPEC and living-doc shapes, in-app help structure, doc verification gate). Keel's own product docs stay in the keel repo.
+
 ## 0.11.1 - 2026-07-14
 - multi-tenant-isolation: add the Supabase grant trap. Supabase grants anon AND authenticated ALL
   privileges on every new public table by default, a hole separate from RLS (TRUNCATE is not
