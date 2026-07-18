@@ -2,6 +2,19 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.13.0 - 2026-07-18
+- security-review: fold in five classes surfaced by the Covaro (feld-labs/covaro) full audit. New
+  Tier 1 item 6, the app-layer gate (allowlist / plan / feature flag) that is never enforced at the
+  data layer, so a direct PostgREST call with the browser's anon key skips your middleware entirely.
+  Tighten the SSRF item with the parts most guards miss: `not is_global` over a hand-rolled denylist,
+  IPv6 translation-form unwrapping, connection-pinning to the validated IP (re-checking alone still
+  races DNS rebinding), and per-hop redirect revalidation. New Tier 2 scars: the user can write the row
+  that bills them (usage/credit/verification state must be server-written, not just RLS-scoped);
+  count-then-insert quota checks race (TOCTOU); internal service seams that treat loopback as auth;
+  and a hardening fix applied to one path but not its twin. Plus two greps (globally-readable tables,
+  self-writable billing state). No open holes were found in the audited app; these are the
+  generalizable lessons from what was checked.
+
 ## 0.12.0 - 2026-07-17
 - Replace the project-specific keel-product skill with a portable technical-documentation method skill (doc types, accuracy/audience contracts, SPEC and living-doc shapes, in-app help structure, doc verification gate). Keel's own product docs stay in the keel repo.
 
