@@ -20,6 +20,11 @@ Put these at the top, before everything else. For a typical multi-tenant SaaS:
   (the founder's account, the primary workflow, the data that predates the new code).
 - **Onboarding a brand-new user.** Empty account -> create -> connect data -> lands in the app on the
   correct default tier, with no retired options in the flow.
+- **Security-review pass.** A launch-grade security audit is green at the depth the surface warrants: no
+  open Critical/High, and the mechanizable classes (RLS enabled per table, no client-writable
+  billing/usage state, no globally-readable table carrying per-user content, secrets tripwire) are
+  enforced as standing CI gates, not just checked by hand. Defer the checklist and the CI-gate shape to
+  [[security-review]]. A Critical/High finding stops the release the same way a cross-tenant read does.
 
 State plainly: any red gate stops the release. Everything below is important but not a launch blocker.
 
