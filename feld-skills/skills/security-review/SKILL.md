@@ -243,6 +243,68 @@ open-source **`seatrial`** skill-set (github.com/Lagunaswift/SeaTrails, MIT, Jam
 of these references are adapted from. Treat its output the same way: verify every finding in-source, a
 clean pass only means those lenses did not fire.
 
+## Make it a standing gate (do not re-audit from scratch each time)
+
+A manual audit is a snapshot. It goes stale the next commit. The classes that can be checked
+mechanically must become **CI gates** so a regression fails the build, not the next audit six months
+later. This is how the review becomes part of the structure instead of an event. The rule of thumb:
+**if a finding can be expressed as "this must always be true," it belongs in CI, not in a checklist a
+human re-reads.**
+
+The gate that pays for itself is a **tenant-isolation test that runs against a real database in CI**
+(a Postgres service container), applies every migration, seeds two tenants, and acts as the real
+`authenticated` role. RLS is never assumed to work; it is exercised. On a BaaS stack the test must
+mirror the platform's default grants (Supabase grants anon AND authenticated ALL privileges on every
+new table, a hole a plain-Postgres test never sees) and then assert the locked-down posture, so a table
+left wide open fails. See [[multi-tenant-isolation]] for the helper functions and the full test shape.
+
+Extend that same test with the assertions that catch the classes above, so they cannot come back:
+
+```python
+# RLS is ENABLED on every public table (not just present in some migrations).
+bad = cur.execute("""
+  select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace
+  where n.nspname='public' and c.relkind='r' and not c.relrowsecurity""").fetchall()
+assert not bad, f"tables without RLS: {[r[0] for r in bad]}"
+
+# Internal/service-role tables deny the authenticated role (run AS authenticated, expect zero/denied).
+assert_denied_select("search_definition")
+
+# Billing/usage/verification state is NOT client-writable (Tier 2 scar: the user can write the row
+# that bills them). No INSERT/UPDATE grant to authenticated on those tables.
+for tbl in USAGE_AND_BILLING_TABLES:
+    for priv in ("INSERT", "UPDATE"):
+        assert not has_grant("authenticated", tbl, priv), f"{tbl}: authenticated must not {priv}"
+
+# Every globally-readable table (using(true) SELECT policy) is on a reviewed allowlist of tables
+# that are INTENDED to be global. A new one forces a conscious decision, not a silent leak.
+glob = list_tables_with_policy("SELECT", "true")
+assert set(glob) <= INTENTIONALLY_GLOBAL, f"unexpected globally-readable tables: {set(glob)-INTENTIONALLY_GLOBAL}"
+```
+
+Alongside the DB gate, two cheap repo tripwires belong in the same workflow:
+
+- **Secrets/PII tripwire:** `git ls-files | grep -iE '\.env$|secret|credential|\.pem$|\.key$|-key\.json$'`
+  fails the build on anything but templates. This is the check that catches a committed key before it is
+  pushed, not after.
+- **App-gate-at-the-DB check:** for any allowlist/plan/flag enforced in app middleware, a probe that
+  authenticates as a non-entitled JWT and asserts it cannot reach the gated data directly. If the gate
+  lives only in middleware, this probe passes when it should fail, which is the finding.
+
+When you close a finding, add its assertion to the gate in the same PR. The audit's job is then to find
+the classes CI cannot yet express (judgment: SSRF logic, prompt-injection reach, business-logic abuse,
+attack-path chains), not to re-run the mechanical ones a machine now owns.
+
+## Wire it into the release process
+
+The audit is not optional and not ad hoc. It is a **hard release gate**, alongside tenant isolation and
+the money path (see [[release-qa-plan]]): a security-review pass, at the depth the surface warrants, must
+be green before a launch, before a repo or surface goes public, and before real money moves. A red
+finding at Critical/High stops the release the same way a failing isolation test does. For a change-level
+review, the built-in `/security-review` (diff review) runs per PR; this playbook is the launch-grade and
+periodic full pass. Re-run the full audit whenever the surface materially changes (new auth, payments,
+file uploads, an AI feature, a public form) and on a standing cadence for anything already public.
+
 ## The gate
 
 Nothing ships from a security review by self-merge. Findings get an independent second reviewer;

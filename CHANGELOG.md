@@ -14,6 +14,15 @@ Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each ch
   and a hardening fix applied to one path but not its twin. Plus two greps (globally-readable tables,
   self-writable billing state). No open holes were found in the audited app; these are the
   generalizable lessons from what was checked.
+- security-review: make the review a standing programmatic gate, not a one-off event. New sections:
+  "Make it a standing gate" turns the mechanizable classes into copyable CI assertions (RLS enabled per
+  table, internal tables deny authenticated, billing/usage state not client-writable, globally-readable
+  tables on a reviewed allowlist) that extend the real-Postgres isolation test, plus the secrets/PII
+  tripwire and the app-gate-at-the-DB probe; "Wire it into the release process" makes a security-review
+  pass a hard release gate. The audit's remaining job is the classes CI cannot express (SSRF logic,
+  injection reach, business-logic abuse, attack chains).
+- release-qa-plan: add a security-review pass to the hard release gates, deferring the checklist and
+  CI-gate shape to [[security-review]]; a Critical/High finding stops the release like a cross-tenant read.
 
 ## 0.12.0 - 2026-07-17
 - Replace the project-specific keel-product skill with a portable technical-documentation method skill (doc types, accuracy/audience contracts, SPEC and living-doc shapes, in-app help structure, doc verification gate). Keel's own product docs stay in the keel repo.
