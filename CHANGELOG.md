@@ -2,6 +2,16 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.13.0 - 2026-07-22
+- seo-aeo-geo: add the credibility layer, the part that makes authority content actually rank rather
+  than merely be crawlable. New section 7 (sourcing discipline: primary-source-or-nothing, chase-to-
+  origin, a CLAIM-LEDGER gate, mechanism-over-outcome claims, explicit dataset scope, and that
+  interactive tools inherit the same gate; governing rule "an unsourced claim is worse than no claim")
+  and section 8 (original first-party research with Dataset/TechArticle/Table schema as an AEO moat,
+  and the "become the cited source" play). Also: llms-full.txt for research-heavy sites, and the
+  "claim propositions, not adjectives" GEO pattern. Distilled from the Meridino research-hub work where
+  a 34-claim ledger found only a third of a supplied research dump cleanly publishable.
+
 ## 0.12.0 - 2026-07-17
 - Replace the project-specific keel-product skill with a portable technical-documentation method skill (doc types, accuracy/audience contracts, SPEC and living-doc shapes, in-app help structure, doc verification gate). Keel's own product docs stay in the keel repo.
 
