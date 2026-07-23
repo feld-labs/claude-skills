@@ -2,6 +2,21 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.14.0 - 2026-07-23
+- New skill: copywriting-craft. The craft of writing customer-facing copy well, our own synthesis
+  of the method in Ann Handley's "Everybody Writes" (attributed; no reproduced text), built as a
+  living skill meant to grow with house examples. Covers the blank-page-to-strong-copy process
+  (goal line, so-what/because chain, gather specifics first, ugly first draft, rewrite as the real
+  writing), twelve durable craft rules (front-load, delete the running start, show don't tell,
+  named specifics, real words, strong verbs), voice-vs-tone, a two-pass edit (chainsaw then
+  scalpel) with a ship checklist, per-format notes (headlines, hero, landing pages, email,
+  microcopy, error states), and journalism-grade truth rules. Its centerpiece, and the reason it
+  exists: a "copy that does not read as AI" playbook with three tests (strip-the-logo, read-aloud,
+  one-fact) and a tells-and-fixes table (adjective stacking, hollow verb-objects, triad reflex,
+  confident vagueness, fake empathy, generic CTAs), because our marketing copy has been reading
+  as obviously AI-generated. Complements product-positioning (WHAT to say) and content-engine
+  (production ops); this skill is HOW to write it. Version jumps 0.12.0 -> 0.14.0 because 0.13.0
+  is claimed by the open seo-aeo-geo sourcing-discipline PR.
 ## 0.13.0 - 2026-07-22
 - seo-aeo-geo: add the credibility layer, the part that makes authority content actually rank rather
   than merely be crawlable. New section 7 (sourcing discipline: primary-source-or-nothing, chase-to-
