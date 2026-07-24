@@ -1,6 +1,6 @@
 {
   "name": "feld-skills",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "Reusable Feld Labs playbooks: a building-products master + marketplace layer, SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, a content-engine (strategy, writing, and agent-fleet production), copywriting craft (process, voice, editing, and copy that does not read as AI), landing-page revamp, trust and verification, shipping Next.js, product positioning, marketing-asset generation, design and UI craft, optional integrations, in-house observability and error monitoring, Supabase migration verification, release QA planning, security review, delegate-and-QA model routing, venture scoping (kill-check, decision gates, PRD gate), Fable-quality strategy work on Opus, tiered program handoff, and a technical-documentation method (how to spec, write, structure, and verify docs).",
   "author": {
     "name": "Brian Feldman",
