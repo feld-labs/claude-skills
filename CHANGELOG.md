@@ -2,6 +2,21 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.15.0 - 2026-07-23
+- seo-aeo-geo: add four generalizable learnings distilled from recent scaled-content and research-hub
+  work. New section 7, the programmatic/per-entity scaled-content doctrine: compete for the "best [X]
+  for [entity]" query and never assert the superlative, interrogative/descriptive titles, a no-data-no-
+  page anti-spam gate, entity-specific claims need entity-specific evidence, capped/labeled boilerplate,
+  pages that decay with their data, and a banned-phrase CI check that fails the build. Sharpened section
+  8 (credibility): a citation is not sufficient, verify by re-fetching the source, two named failure
+  modes (overstatement, figure drift), a defined "citable with caveat" verdict, and `verified-as-of`
+  dates re-checked on a cadence. New moat-boundary note in section 9: a content/AEO program can silently
+  undo an anti-scraping defense, so protected per-record data is excluded from sitemaps, JSON-LD, AND
+  llms-full.txt. New section 10, distributing third-party content without becoming a mirror site: facts
+  + bounded attributed excerpt + value-add + canonical link + auto-expiry, versus the penalized mirror
+  pattern, plus the freshness edge on vertical structured-data surfaces. Checklist updated with the four
+  new items. All sections renumbered (old 7/8 -> 8/9) and internal cross-references fixed.
+
 ## 0.14.0 - 2026-07-23
 - New skill: copywriting-craft. The craft of writing customer-facing copy well, our own synthesis
   of the method in Ann Handley's "Everybody Writes" (attributed; no reproduced text), built as a
