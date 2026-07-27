@@ -70,6 +70,14 @@ A green checkmark is not a correct policy. The classic holes:
 Check: for each policy/query path, ask "who exactly does this let in, and can the user control any
 value I check?" Denormalize the tenant id onto child tables so filters never depend on a join to a
 possibly-open table.
+- **Our server connection bypasses RLS, so RLS is the SECOND layer, not the backstop.** On the Feld
+  stack the server talks to Postgres with a **service-role connection that ignores every RLS policy**.
+  That means app-layer scoping (`where user_id = ctx.userId`, ownership re-checked on every read/write
+  from the verified session, never a client-sent id) is the **primary** control; RLS only protects paths
+  that go through a user-scoped connection. "RLS is enabled" proves nothing about a server query. Verify
+  both: every server query filters by the session's tenant AND RLS is FORCE-enabled with an owner policy
+  as defense in depth. (Confirmed-good example: MySheetAI's app-layer `getAnalysis(id, userId)` refusal
+  plus RLS force+owner on every table.)
 
 **2. Anyone can LIST your storage bucket.**
 Individual file links work fine, so nobody checks the drawer. But if the bucket is public and
@@ -111,7 +119,11 @@ fills in over free-form generation; if you allow free-form, validate it structur
 substring-match), allowlist the tables it can touch, enforce the tenant filter from the parsed
 structure, run under a least-privilege read-only role, and route anything outside the pre-vetted set
 through a **human-in-the-loop approval** step. Never let model output reach a privileged action
-un-gated.
+un-gated. Then the part injection defense misses: even a well-behaved, un-injected bot will happily
+answer **off-topic** requests ("write me a poem") that are honest and artifact-free, so nothing filters
+them out. Give every open-ended AI surface an explicit **topical scope boundary + fixed refusal**, and
+send the model only the minimum data it needs (compute locally, ship aggregates + a bounded sample, with
+a fail-closed size assert). Both patterns are in `references/ai-endpoint-security.md`.
 
 ## Tier 2: Feld Labs scars (found in our own builds, always check)
 

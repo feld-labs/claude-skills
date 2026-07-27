@@ -45,6 +45,13 @@ finding, and until it is removed these apply:
       on (see [[multi-tenant-isolation]]).
 - [ ] File uploads: validate MIME by magic bytes (not extension), size-limit, sanitise the filename,
       store outside the web root, serve through an authenticated endpoint, AV-scan if feasible.
+- [ ] Archive/spreadsheet parsers (zip, xlsx, docx) have a **decompression-bomb guard** (check the
+      declared uncompressed size / inflation ratio and a raw-byte ceiling BEFORE inflating), on **every
+      surface that parses**. Moving a parse from server to client for privacy or cost does NOT carry the
+      server's guard with it: **port the guard, do not assume it.** Whenever the same operation exists on
+      two surfaces, diff their guards. (Feld scar: MySheetAI moved XLSX parsing to the browser and the
+      client copy shipped with no bomb guard the server had; a client-side bomb is a self-DoS, still a
+      hole to close before the path goes live.)
 
 ## Output protection
 - [ ] XSS: encode all dynamic content for its context (HTML, attribute, JS, URL). Sanitise
@@ -56,6 +63,17 @@ finding, and until it is removed these apply:
 - [ ] Separate secrets per environment. Production secrets in a manager, not on dev machines.
 - [ ] For Next.js: verify no secret is behind a `NEXT_PUBLIC_` var (it ships to the browser).
 - [ ] `npm audit` / `pip-audit` in CI, failing on critical. Lockfiles committed. New deps reviewed.
+- [ ] **When the published package is stuck on an unfixed CVE, check whether upstream ships a fixed build
+      outside the registry, and vendor it.** (Feld scar: npm's `xlsx@0.18.5` carries unpatched HIGH CVEs;
+      SheetJS ships fixes only via their own CDN tarball. Pin to that tarball or vendor it into the repo,
+      and set a re-check cadence, e.g. Dependabot plus a scheduled audit job.) Do not ship a known-vuln
+      version just because it is the newest one npm serves.
+- [ ] **Kill transitive vulns you cannot upgrade with npm `overrides`** (pin the safe nested version),
+      rather than accepting the whole tree's youngest release. Residual dev-only advisories with no fix
+      available get documented, not silently carried.
+- [ ] **Bump to the minimal patched version that clears the advisory, not blindly to latest** (Feld:
+      Next 14.2.x had no clean patch, so 15.5.x, not 16.x). Smaller blast radius, and you still re-run the
+      full gate (tsc + tests + build + real-DB suites) because even a minimal bump moves framework APIs.
 
 ## Database
 - [ ] App connects with a minimum-privilege DB user. DB not reachable from the public internet.
