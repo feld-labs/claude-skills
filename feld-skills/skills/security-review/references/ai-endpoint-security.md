@@ -53,6 +53,8 @@ Adapted for Feld Labs from the `seatrial` ai-saas-security lens (MIT, James Swif
 - [ ] Structured-output schema validation when expecting JSON.
 - [ ] **Sanitise AI output before rendering (DOMPurify): the model can generate XSS payloads.**
 - [ ] User-facing errors reveal nothing about provider, architecture, or prompts.
+- [ ] **Topical scope boundary + fixed refusal on any open-ended surface** (see "Scope containment"
+      below): the bot answers only in-domain requests and refuses everything else via a fixed message.
 
 ## Infrastructure and isolation
 - [ ] Auth on EVERY AI endpoint. Zero unauthenticated AI access.
@@ -61,6 +63,35 @@ Adapted for Feld Labs from the `seatrial` ai-saas-security lens (MIT, James Swif
 - [ ] Full audit trail per call: input hash, output hash, tokens, cost, user, tenant, timestamp.
 - [ ] Anomaly detection on usage; graceful degradation when the provider is down (failover / cache /
       queue / disable). Webhook signatures verified on async AI callbacks. CORS restricted to your domains.
+
+## Scope containment (the honest-but-off-topic gap injection defense misses)
+Injection defense stops the model obeying a hostile instruction. Output filtering stops it leaking PII
+or XSS. Neither stops the model from cheerfully answering a question that is simply **not what your
+product does**: a data-analyst bot asked "write me a poem" or "what is the capital of France" produces a
+number-free, artifact-free, non-injected reply that sails through both guards. You now run a
+general-purpose LLM on your bill, off-brand, and hand every abuser a free model proxy. (Feld Labs scar:
+the MySheetAI analyst follow-up passed number-grounding and content guards but had no topical boundary.)
+- **A domain boundary is a separate control from injection and output filtering.** Add it explicitly.
+- **The refusal-sentinel pattern (our fix):** the system prompt tells the model that if the request is
+  anything other than its actual job (here: this dataset, its statistics, and how they were computed) it
+  must reply with **exactly one fixed sentinel token and nothing else**. The server detects that token
+  BEFORE the other guards and swaps in a fixed refusal string. The model never free-forms an off-domain
+  answer, and the sentinel itself is never shown to the user. This mirrors the fixed-refusal a contained
+  formula/codegen surface already uses; give every open-ended AI surface the same boundary.
+- Test it the way you test injection: ask your own bot to do three things it should refuse, confirm each
+  returns the fixed refusal, and confirm a legitimate in-scope request still passes unchanged.
+
+## Minimize what leaves the client (the payload chokepoint, a positive pattern)
+The cheapest data breach is the data you never sent. When a feature analyzes a user's file or record,
+the raw rows do not need to reach your server or the model at all.
+- **Compute locally, send only aggregates plus a bounded sample.** Parse and profile in the browser;
+  send the model summary statistics plus a tiny, capped sample (e.g. <= 5 rows, <= 12 columns, <= 200
+  chars/cell), never the full dataset. This makes the privacy pitch literally true, cuts the model bill,
+  and shrinks what an injected prompt could ever exfiltrate.
+- **Enforce it with a fail-closed assert at the boundary**, not by convention: a guard that throws if the
+  outbound payload exceeds the shape/row/cell caps, so a future code change cannot silently widen it.
+- **Never persist the raw rows or the sampled cells.** Store the rendered, grounded result, not the input.
+  (Feld Labs pattern: MySheetAI's `assertPayloadMinimal` chokepoint plus raw rows never written to the DB.)
 
 ## AI that can DO things (tools, SQL, sends) is the sharp edge
 A rule in the prompt is not a permission boundary. If the model can call a tool, query the database,

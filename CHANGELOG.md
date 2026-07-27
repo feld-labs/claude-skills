@@ -2,6 +2,24 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.16.0 - 2026-07-27
+- security-review: fold in five generalizable lessons from the MySheetAI pre-relaunch audit (verdict was
+  no critical/high; these are the transferable patterns, not the project-specific findings).
+  `ai-endpoint-security.md` gains two new sections: **Scope containment**, the honest-but-off-topic gap
+  that injection defense and output filtering both miss (a data bot cheerfully writing a poem), with the
+  refusal-sentinel pattern (model emits one fixed sentinel for out-of-scope, server maps it to a fixed
+  refusal before the other guards); and **Minimize what leaves the client**, the payload-chokepoint
+  positive pattern (compute locally, send only aggregates + a bounded sample, enforce with a fail-closed
+  size assert, never persist raw rows), plus a matching Output-security checklist item. `SKILL.md` Tier 1
+  #1 gains the sharp stack fact that our **service-role DB connection bypasses RLS**, so app-layer
+  session scoping is the PRIMARY control and RLS is only the second layer (verify both); Tier 1 #5 gains
+  a pointer to scope containment + payload minimization. `production-hardening.md` gains supply-chain
+  levers (vendor an upstream-fixed build when the registry version is CVE-stuck; `overrides` for
+  un-upgradeable transitives; minimal patched bump not blind-latest, still re-gate) and a decompression-
+  bomb / **port-the-guard-across-surfaces** item (a server guard does not follow a parser moved to the
+  client). No new findings dumped; existing coverage (prompt injection, RLS holes, secrets, headers) left
+  as-is.
+
 ## 0.15.0 - 2026-07-23
 - seo-aeo-geo: add four generalizable learnings distilled from recent scaled-content and research-hub
   work. New section 7, the programmatic/per-entity scaled-content doctrine: compete for the "best [X]
