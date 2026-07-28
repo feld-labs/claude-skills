@@ -1,0 +1,65 @@
+<!--
+  MARKETING / LIFECYCLE: "The week at {{BRAND_NAME}}" weekly product-update changelog.
+  Paste into: your ESP (Brevo) -> Campaigns -> new campaign -> paste HTML (or save as a template).
+  {{ unsubscribe }} is the ESP unsubscribe merge tag and is REQUIRED on marketing sends.
+  Brand tokens in {{DOUBLE_BRACES}} (see _brand-tokens.md). Each week: edit the intro line, the
+  bulleted list, and the CTA link. Add or remove an <li> to change the list length.
+  Style modeled on the Railway changelog: eyebrow, "the week at X" heading, scannable bullets ending
+  in "Fixes and improvements", one CTA, a reply-for-feedback line, a personal signoff.
+  Email-safe: table layout, inline styles, system font stack, no web font.
+-->
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">{{PREHEADER}}</span>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f8f7;margin:0;padding:0;">
+  <tr>
+    <td align="center" style="padding:40px 16px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e9edeb;border-radius:14px;overflow:hidden;">
+        <tr>
+          <td style="background:{{BRAND_ACCENT_BG}};border-bottom:1px solid {{BRAND_ACCENT_BORDER}};padding:20px 36px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+              <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:19px;font-weight:700;color:#0f172a;letter-spacing:-0.02em;">{{BRAND_WORDMARK_HTML}}</td>
+              <td align="right" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:{{BRAND_ACCENT}};">Product Update</td>
+            </tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:32px 36px 0;">
+            <h1 style="margin:0 0 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:26px;line-height:1.25;font-weight:700;letter-spacing:-0.02em;color:#0f172a;">The week at {{BRAND_NAME}}</h1>
+            <p style="margin:0 0 18px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;color:#475569;">It's Friday, and you know what that means. Here's a quick rundown of what we shipped this week:</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 36px 0;">
+            <ul style="margin:0;padding:0 0 0 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.75;color:#334155;">
+              <li style="margin:0 0 6px;">First thing we shipped, said the way a customer would say it</li>
+              <li style="margin:0 0 6px;">A second improvement that landed this week</li>
+              <li style="margin:0 0 6px;">A third one, kept short so the list stays scannable</li>
+              <li style="margin:0;">Fixes and improvements</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:28px 36px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+              <td align="center" bgcolor="{{BRAND_ACCENT}}" style="border-radius:8px;">
+                <a href="{{APP_URL}}/changelog" style="display:inline-block;padding:13px 30px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">Read the changelog</a>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:26px 36px 0;">
+            <p style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:#475569;">Got thoughts or feedback on any of this? Just reply to this email. We read every one.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:24px 36px 30px;">
+            <div style="border-top:1px solid #eef2f0;padding-top:18px;">
+              <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:#334155;">{{FOOTER_IDENTITY}}</p>
+              <p style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#94a3b8;">You get this because you have a {{BRAND_NAME}} account. <a href="{{ unsubscribe }}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
