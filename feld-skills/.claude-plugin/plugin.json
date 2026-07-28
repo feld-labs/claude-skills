@@ -1,7 +1,7 @@
 {
   "name": "feld-skills",
-  "version": "0.16.0",
-  "description": "Reusable Feld Labs playbooks: a building-products master + marketplace layer, SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, a content-engine (strategy, writing, and agent-fleet production), copywriting craft (process, voice, editing, and copy that does not read as AI), landing-page revamp, trust and verification, shipping Next.js, product positioning, marketing-asset generation, design and UI craft, optional integrations, in-house observability and error monitoring, Supabase migration verification, release QA planning, security review, delegate-and-QA model routing, venture scoping (kill-check, decision gates, PRD gate), Fable-quality strategy work on Opus, tiered program handoff, and a technical-documentation method (how to spec, write, structure, and verify docs).",
+  "version": "0.17.0",
+  "description": "Reusable Feld Labs playbooks: a building-products master + marketplace layer, SaaS billing, multi-tenant isolation, white-label branding, SEO/AEO/GEO, a content-engine (strategy, writing, and agent-fleet production), copywriting craft (process, voice, editing, and copy that does not read as AI), landing-page revamp, trust and verification, shipping Next.js, product positioning, marketing-asset generation, design and UI craft, optional integrations, in-house observability and error monitoring, Supabase migration verification, release QA planning, security review, delegate-and-QA model routing, venture scoping (kill-check, decision gates, PRD gate), Fable-quality strategy work on Opus, tiered program handoff, a technical-documentation method (how to spec, write, structure, and verify docs), and email correspondence (email-safe HTML templates, a brand-token system, provider wiring, and deliverability/sending-law compliance).",
   "author": {
     "name": "Brian Feldman",
     "email": "brian@feldand.co"
@@ -77,6 +77,13 @@
     "documentation",
     "technical-writing",
     "specs",
-    "runbook"
+    "runbook",
+    "email",
+    "transactional-email",
+    "magic-link",
+    "changelog-email",
+    "deliverability",
+    "brevo",
+    "supabase-auth-email"
   ]
 }

@@ -2,6 +2,21 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.17.0 - 2026-07-27
+- New skill: email-correspondence. Spin up a product's email channel fast and keep it deliverable and
+  compliant, seeded from the MySheetAI relaunch email work (magic-link + a Railway-style weekly
+  changelog). SKILL.md covers the hard email-safe HTML rules (table layout, inline styles, system font
+  stack with no web font, one bulletproof CTA, preheader, image-off resilience, dark-mode awareness), a
+  brand-token system so a new product's emails are a 5-minute find-and-replace, provider wiring (two
+  lanes: Supabase Auth for transactional/auth, Brevo campaigns for marketing) with the exact merge tags
+  and the leading-dot gotcha, deliverability and US sending law (SPF/DKIM/DMARC, CAN-SPAM unsubscribe +
+  physical address, transactional-vs-marketing legal split, warm-up), a preview-before-send workflow
+  (Artifact + real-client test), the launch-day email set every product needs, and the customer-notice-
+  before-cutover rule. Ships four reusable tokenized templates (`magic-link`, `weekly-changelog`,
+  `welcome`, `transactional-base`), a brand-token reference with a filled MySheetAI example, and two
+  references (`provider-wiring`, `deliverability-and-compliance`). Cross-links copywriting-craft (words),
+  product-positioning (message), and marketing-asset-gen (visuals). Plugin description + keywords updated.
+
 ## 0.16.0 - 2026-07-27
 - security-review: fold in five generalizable lessons from the MySheetAI pre-relaunch audit (verdict was
   no critical/high; these are the transferable patterns, not the project-specific findings).
