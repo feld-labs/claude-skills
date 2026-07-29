@@ -2,7 +2,7 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
-## 0.18.0 - 2026-07-29
+## 0.19.0 - 2026-07-29
 - copywriting-craft: elevate two rules as Brian's standing directive, added prominently under the
   quality bar (section 0). (1) Lead with the point (the pyramid principle): state the conclusion
   first, then pyramid the support; never bury the lead, hardest on copy that says what a product
@@ -10,6 +10,27 @@ Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each ch
   writerly flourishes. Includes a worked before/after from the MySheetAI product tour ("Every number
   computed from your file" -> "The numbers are real, not guessed"). Distilled from the 2026-07-29
   product-page copy pass.
+
+## 0.18.0 - 2026-07-28
+- email-correspondence: five new templates round the catalog out to nine, all matching the existing
+  email-safe pattern (table layout, inline styles, system font stack, one bulletproof CTA, hidden
+  preheader, brand tokens). `receipt.html` (transactional payment confirmation: plan, amount, billing
+  period, next renewal date as a 2-column line-item table, "Manage billing" CTA to the billing
+  portal). `payment-failed.html` (transactional dunning: calm not alarming, states an automatic retry
+  and a named grace window, "Update payment method" CTA; flagged in SKILL.md as the single
+  highest-ROI retention email in the catalog). `usage-limit.html` (lifecycle/conversion nudge: two
+  states, near-limit and at-limit, in one file toggled by an HTML comment, "Upgrade" CTA). `results-
+  digest.html` (marketing/lifecycle, PERSONALIZED per recipient, distinct from `weekly-changelog.html`
+  which is the same company news to everyone; a repeatable item-row block marked "duplicate this
+  block per item", one "See all" CTA, required unsubscribe tag). `migration-notice.html`
+  (announcement for a relaunch or account-level change: what is changing, what the customer must do,
+  when, and reassurance that the subscription and data carry over; sent before cutover ships, never
+  after). SKILL.md's template catalog now describes all nine templates, plus a new "Which emails a
+  product needs (by operating model)" subsection mapping templates to product shape (a metered SaaS
+  vs. a discovery/matching product) rather than to any named product, calling out `payment-failed` as
+  the highest-ROI send and steering one-off transactional triggers to `transactional-base.html`
+  instead of new bespoke files. Plugin description and keywords updated (receipt, dunning,
+  usage-based, digest, email-migration).
 
 ## 0.17.0 - 2026-07-27
 - New skill: email-correspondence. Spin up a product's email channel fast and keep it deliverable and
