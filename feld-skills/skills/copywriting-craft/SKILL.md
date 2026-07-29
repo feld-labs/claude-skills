@@ -39,6 +39,28 @@ Two supporting beliefs, both from the book, both load-bearing:
 2. **Publishing is a privilege.** Nobody has to read this. The reader owes us nothing, and every
    sentence that wastes their time spends trust we do not have.
 
+### Two rules we hold above the rest (Brian's standing directive)
+
+Apply these to everything, and hardest to the copy that says what a product does (home pages, product
+pages, feature explanations). They catch most AI-marketing copy on their own.
+
+1. **Lead with the point (the pyramid principle).** State the conclusion first, then support it. The
+   reader should get the answer in the opening line and be able to stop there; the reasons and detail
+   pyramid underneath. Order every piece, every section, and every sentence answer-first. Never bury
+   the lead, and never make the reader assemble the point from clues. (This is Barbara Minto's pyramid:
+   top-line the message, stack the support beneath it. It is the same instinct as "front-load
+   everything" in section 2, named and elevated because it is the one we break most.)
+2. **Say it plainly (5th-8th grade).** Use short, common words a smart person in a hurry reads without
+   slowing down. No jargon, no insider terms, no marketing voice, no writerly flourishes. If a
+   twelve-year-old would not use the word, find a plainer one. Plain is not dumb; plain is respect for
+   the reader's time.
+
+Worked example from our own product tour (both rules at once):
+- Buried and jargon-y: "Every number computed from your file" / "The figure in the sentence is
+  calculated in code from your rows, never guessed."
+- Lead-first and plain: **"The numbers are real, not guessed"** / "MySheetAI adds up your own data to
+  get every number. It never makes one up."
+
 ## 1. Process: blank page to strong copy
 
 Condensed from Handley's writing-GPS into the steps we actually use. Order is flexible except that

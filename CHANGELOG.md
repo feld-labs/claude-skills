@@ -2,6 +2,15 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.18.0 - 2026-07-29
+- copywriting-craft: elevate two rules as Brian's standing directive, added prominently under the
+  quality bar (section 0). (1) Lead with the point (the pyramid principle): state the conclusion
+  first, then pyramid the support; never bury the lead, hardest on copy that says what a product
+  does. (2) Say it plainly (5th-8th grade): short common words, no jargon or marketing voice or
+  writerly flourishes. Includes a worked before/after from the MySheetAI product tour ("Every number
+  computed from your file" -> "The numbers are real, not guessed"). Distilled from the 2026-07-29
+  product-page copy pass.
+
 ## 0.17.0 - 2026-07-27
 - New skill: email-correspondence. Spin up a product's email channel fast and keep it deliverable and
   compliant, seeded from the MySheetAI relaunch email work (magic-link + a Railway-style weekly
