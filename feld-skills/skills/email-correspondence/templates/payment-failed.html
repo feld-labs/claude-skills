@@ -1,0 +1,47 @@
+<!--
+  TRANSACTIONAL: dunning (a card was declined). Fires on Stripe's `invoice.payment_failed` or
+  equivalent. THE SINGLE HIGHEST-ROI RETENTION EMAIL: most failed payments are an expired card or
+  a bank hiccup, not an intentional cancel. Tone is calm and helpful, not alarming, no red banners,
+  no "your account is suspended" scare copy. State that we will retry automatically AND give a
+  self-serve fix, with a clear grace window before anything actually lapses.
+  Tokens: {{PLAN_NAME}}, {{GRACE_DAYS}} (e.g. "7"), {{BILLING_PORTAL_URL}}, plus the usual brand
+  tokens (see _brand-tokens.md).
+  Email-safe: table layout, inline styles, system font stack, no web font, one bulletproof button.
+-->
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">{{PREHEADER}}</span>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f8f7;margin:0;padding:0;">
+  <tr>
+    <td align="center" style="padding:40px 16px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e9edeb;border-radius:14px;">
+        <tr>
+          <td style="padding:28px 36px 0;">
+            <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:20px;font-weight:700;color:#0f172a;letter-spacing:-0.02em;">{{BRAND_WORDMARK_HTML}}</span>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:20px 36px 0;">
+            <h1 style="margin:0 0 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:24px;line-height:1.3;font-weight:700;letter-spacing:-0.02em;color:#0f172a;">We could not process your payment</h1>
+            <p style="margin:0 0 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.65;color:#475569;">Your card was declined for your {{PLAN_NAME}} subscription. This usually just means a card expired or a bank flagged the charge, nothing to worry about.</p>
+            <p style="margin:0 0 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.65;color:#475569;">We will automatically retry the charge over the next {{GRACE_DAYS}} days. To keep things moving without any interruption, you can update your payment method now.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 6px;">
+              <tr>
+                <td align="center" bgcolor="{{BRAND_ACCENT}}" style="border-radius:8px;">
+                  <a href="{{BILLING_PORTAL_URL}}" style="display:inline-block;padding:13px 30px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">Update payment method</a>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:22px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:#475569;">Your access stays exactly as it is while we retry. If we still cannot charge the card after {{GRACE_DAYS}} days, we will let you know before anything changes.</p>
+            <p style="margin:18px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;line-height:1.6;color:#94a3b8;">Questions about your billing? Just reply to this email, we are happy to help.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:26px 36px 30px;">
+            <div style="border-top:1px solid #eef2f0;padding-top:18px;">
+              <p style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#94a3b8;">{{BRAND_NAME}}, {{SENDER_TAGLINE}}.<br>Sent by {{FOOTER_IDENTITY}}.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

@@ -1,6 +1,6 @@
 ---
 name: email-correspondence
-description: Spin up on-brand, email-safe HTML email for a Feld Labs product quickly, and wire it to the sending system. Covers the hard email-safe HTML rules (table layout, inline styles, system fonts, one bulletproof CTA), a brand-token system so a new product's emails take minutes not hours, a reusable template catalog (magic-link sign-in, weekly product-update changelog, welcome, a transactional base), provider wiring (Supabase Auth for transactional, Brevo for marketing) with the exact merge tags, deliverability and sending-law compliance, a preview-before-send workflow, and the launch-day email set every product needs. Use when a product needs any customer-facing email: auth emails, a welcome, a product-update digest, a customer migration notice, or a receipt.
+description: Spin up on-brand, email-safe HTML email for a Feld Labs product quickly, and wire it to the sending system. Covers the hard email-safe HTML rules (table layout, inline styles, system fonts, one bulletproof CTA), a brand-token system so a new product's emails take minutes not hours, a nine-template catalog (magic-link sign-in, welcome, weekly product-update changelog, a transactional base, a payment receipt, dunning for a failed payment, a usage-limit upgrade nudge, a personalized results digest, and a migration/relaunch notice), a by-operating-model map of which templates a metered SaaS versus a discovery/matching product actually needs, provider wiring (Supabase Auth for transactional, Brevo for marketing) with the exact merge tags, deliverability and sending-law compliance, a preview-before-send workflow, and the launch-day email set every product needs. Use when a product needs any customer-facing email: auth emails, a welcome, a receipt, a dunning email, a usage nudge, a personalized digest, a product-update digest, or a customer migration notice.
 ---
 
 # Email Correspondence
@@ -81,9 +81,52 @@ Filling these for a new product is a 5-minute find-and-replace, then the whole c
   "Fixes and improvements", one "Read the changelog" CTA, a reply-for-feedback line, a personal signoff,
   and the required unsubscribe. Duplicate/trim the list per week. Pairs with a `/changelog` page.
 - **`transactional-base.html`** a bare, tokenized shell (header, one content slot, one optional CTA,
-  footer) to build any new transactional email (receipt, seat invite, expiry warning) in minutes.
+  footer) to build any new transactional email (seat invite, expiry warning, one-off status update)
+  in minutes.
+- **`receipt.html`** transactional. Confirms a successful payment or subscription charge. A small
+  2-column line-item table (plan, amount and billing period, next renewal date) and one "Manage
+  billing" CTA to the billing portal. Fires on the provider's payment-succeeded webhook. No upsell
+  copy, just the facts.
+- **`payment-failed.html`** transactional dunning. Fires when a card is declined. Calm and reassuring,
+  not alarming: states we will retry automatically, gives a self-serve "Update payment method" CTA,
+  and names the grace window before anything actually lapses. This is the single highest-ROI
+  retention email in the catalog, most declines are an expired card, not an intentional cancel, and a
+  helpful email recovers revenue a silent retry loop would lose.
+- **`usage-limit.html`** lifecycle/conversion nudge. Two states in one file (near-limit heads-up,
+  at-limit hard stop), only one active at a time, switch by commenting the other block in/out.
+  "You've used {{USED}} of {{ALLOWANCE}} {{UNIT}} this {{PERIOD}}" plus one "Upgrade" CTA. A nudge,
+  not a nag, no repeated urgency.
+- **`results-digest.html`** marketing/lifecycle, PERSONALIZED to the recipient (contrast with
+  `weekly-changelog.html`, which is the same company news to everyone). A repeatable item-row block
+  (title, one-line meta, short description, a "View" link), duplicated per result, with one "See all"
+  CTA. The core re-engagement email for anything that generates ongoing personal results (new matches,
+  new leads, new recommendations). Carries the required unsubscribe tag.
+- **`migration-notice.html`** announcement, for a relaunch or an important account-level change
+  (new auth system, new domain, new billing). States what is changing, what the customer must do,
+  when it takes effect, and reassures that the subscription and data carry over. Sent BEFORE the
+  cutover ships, never after. One CTA, unsubscribe kept as a safe default.
 
 Each template carries a top HTML comment saying where to paste it and which merge tags to keep.
+
+## Which emails a product needs (by operating model)
+
+The full catalog is nine templates; which subset a given product needs depends on its operating
+model, not its name. Two common shapes:
+
+- **A metered SaaS** (usage caps, a paid tier, a recurring charge): `magic-link` + `welcome` for
+  onboarding, `usage-limit` to drive upgrades as people hit the cap, `receipt` and `payment-failed`
+  for the money path, `weekly-changelog` for ongoing engagement, and `migration-notice` on hand for
+  the day the product relaunches or changes its auth/billing setup.
+- **A discovery/matching product** (jobs, leads, recommendations, anything that surfaces new results
+  over time): `magic-link` + `welcome` for onboarding, `results-digest` as the core re-engagement
+  email (this is the one that brings people back, treat it as the most important send in the
+  catalog for this shape of product), `receipt` and `payment-failed` once the product is monetized,
+  plus `transactional-base` instances for one-off triggers, "your report is ready", an application
+  or status update, a single seat invite. Build those from `transactional-base` rather than adding a
+  bespoke file for each trigger; a one-off notification does not earn its own template.
+
+Cross-cutting rule regardless of shape: `payment-failed` is the highest-ROI email in this catalog the
+moment there is a recurring charge, wire it before anything else billing-adjacent.
 
 ## Provider wiring (who sends what)
 

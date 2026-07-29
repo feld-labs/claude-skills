@@ -1,0 +1,69 @@
+<!--
+  LIFECYCLE / CONVERSION: usage-limit nudge. Fires from your metering job at two thresholds.
+  TWO STATES IN THIS ONE FILE, pick the block that matches the trigger and delete the other:
+    - NEAR-LIMIT (e.g. 80-90% of allowance): a friendly heads-up, plenty of runway left in the copy.
+    - AT-LIMIT (100% used): the same layout, firmer copy, this is what is blocking them right now.
+  This is a nudge, not a nag: one line of fact, one CTA, no scare copy, no repeated exclamation points.
+  Tokens: {{USED}}, {{ALLOWANCE}}, {{UNIT}} (e.g. "questions"), {{PERIOD}} (e.g. "week", "month"),
+  {{UPGRADE_URL}}, plus the usual brand tokens (see _brand-tokens.md).
+  Email-safe: table layout, inline styles, system font stack, no web font, one bulletproof button.
+-->
+<span style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">{{PREHEADER}}</span>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f8f7;margin:0;padding:0;">
+  <tr>
+    <td align="center" style="padding:40px 16px;">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e9edeb;border-radius:14px;">
+        <tr>
+          <td style="padding:28px 36px 0;">
+            <span style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:20px;font-weight:700;color:#0f172a;letter-spacing:-0.02em;">{{BRAND_WORDMARK_HTML}}</span>
+          </td>
+        </tr>
+
+        <!-- STATE A: NEAR-LIMIT. Use this block when usage crosses the warning threshold. Delete
+             the AT-LIMIT block below if you use this one. -->
+        <tr>
+          <td style="padding:20px 36px 0;">
+            <h1 style="margin:0 0 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:24px;line-height:1.3;font-weight:700;letter-spacing:-0.02em;color:#0f172a;">You're getting close to your limit</h1>
+            <p style="margin:0 0 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.65;color:#475569;">You've used {{USED}} of {{ALLOWANCE}} {{UNIT}} this {{PERIOD}}. You've still got some room, this is just a heads-up so nothing catches you off guard.</p>
+            <p style="margin:0 0 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.65;color:#475569;">If you'd like more headroom, upgrading removes the cap.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 6px;">
+              <tr>
+                <td align="center" bgcolor="{{BRAND_ACCENT}}" style="border-radius:8px;">
+                  <a href="{{UPGRADE_URL}}" style="display:inline-block;padding:13px 30px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">Upgrade</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!--
+        STATE B: AT-LIMIT. Use this block instead of STATE A above when usage hits 100%. Firmer
+        copy because this is actively blocking them, but still no alarm styling, same layout.
+        <tr>
+          <td style="padding:20px 36px 0;">
+            <h1 style="margin:0 0 12px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:24px;line-height:1.3;font-weight:700;letter-spacing:-0.02em;color:#0f172a;">You've used all your {{UNIT}} for this {{PERIOD}}</h1>
+            <p style="margin:0 0 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.65;color:#475569;">You've used {{USED}} of {{ALLOWANCE}} {{UNIT}} this {{PERIOD}}, so new requests are paused until your {{PERIOD}} resets.</p>
+            <p style="margin:0 0 14px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.65;color:#475569;">Upgrading removes the cap and picks up right where you left off.</p>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin:22px 0 6px;">
+              <tr>
+                <td align="center" bgcolor="{{BRAND_ACCENT}}" style="border-radius:8px;">
+                  <a href="{{UPGRADE_URL}}" style="display:inline-block;padding:13px 30px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">Upgrade</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        -->
+
+        <tr>
+          <td style="padding:26px 36px 30px;">
+            <div style="border-top:1px solid #eef2f0;padding-top:18px;">
+              <p style="margin:0 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:#334155;">{{FOOTER_IDENTITY}}</p>
+              <p style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#94a3b8;">You get this because you have a {{BRAND_NAME}} account. <a href="{{ unsubscribe }}" style="color:#94a3b8;text-decoration:underline;">Unsubscribe</a>.</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
