@@ -2,6 +2,39 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.20.0 - 2026-08-04
+- security-review: added **Tier 3, tenant-isolation and boundary scars**, plus four new steps in the
+  audit method. All of it distilled from a 2026-08 audit of a multi-client financial product where
+  three independent adversarial passes reproduced a cross-tenant SQL join, a cache that served one
+  client's database under another client's id, and a balance sheet that was wrong on both sides while
+  still balancing.
+- The highest-yield addition is method step 8: **a safety property nobody has watched FAIL is not
+  known to hold.** That product had six claimed isolation properties; exactly one had been verified by
+  removing it and watching the test go red, and it was the only one that survived three audits. Every
+  property asserted in prose alone was false. The discriminator was not care or seniority, it was
+  whether anyone had seen the test fail.
+- Method step 9: **fix the CLASS, not the demonstrated instance.** The recurring failure was patching
+  the exact call path a reviewer showed, writing a comment claiming the class was closed, and leaving
+  the other paths open (an offboarding gate fixed on the reporting path but not two others; an
+  existence check added to the write path while the READ path was the one that leaked).
+- Method step 10: **distrust your own prose.** A confident comment asserting an enforcement that does
+  not exist is worse than no comment, because it stops the next reader from checking.
+- Tier 3 itself, each item reproduced rather than theorized: a static text scan cannot enforce absence
+  in a dynamic language (it is a lint, not a control; enforce at runtime instead); cache keys must
+  contain every input that determines the answer; canonicalize paths before comparing them
+  (`realpathSync`, not `resolve`); a wrapper that constrains access must not hand out the raw handle,
+  and "read-only" at one layer is not read-only at all layers; projection-based sanitizing of
+  structured input must recurse; fail-open `catch` inside a security check; **a self-consistency
+  invariant will not catch an error symmetric across it** (reconcile against an independent source);
+  a catch-all bucket that flattens a type dimension misclassifies silently; a partially threaded
+  injection seam falls back to the default and renders a real-looking `$0`; guard a not-yet-implemented
+  path instead of letting it render an empty result under a real number.
+- The gate gained two requirements: every fix ships with a test watched to fail before AND after a
+  temporary revert; and **when the same author has been wrong twice about whether a fix closed the
+  class, they stop writing the fixes** and remediation moves to different eyes.
+- Process note now in the skill: run each audit agent in its own git worktree. Two agents sharing one
+  working tree wrote probe files into each other's runs and contaminated a guard result.
+
 ## 0.19.0 - 2026-07-29
 - copywriting-craft: elevate two rules as Brian's standing directive, added prominently under the
   quality bar (section 0). (1) Lead with the point (the pyramid principle): state the conclusion

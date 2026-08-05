@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: Read before shipping any app, making a repo or surface public, or when auditing an existing app for vulnerabilities. A portfolio-wide security checklist plus a repeatable audit method. Covers the obvious-open holes (missing auth, no isolation, secrets in the repo) AND the "you turned it on and it still leaks" tier (RLS policy holes, bucket listing, pre-auth money pumps, SSRF, prompt injection / AI that takes actions), plus the specific scars from real Feld Labs audits (secrets tracked in git, password-reset tokens returned in the response, LLM-to-SQL cross-tenant leaks, empty signing-secret fallbacks, plaintext provider keys, client-only PII redaction). Use when adding auth, payments, file uploads, an AI feature, or a public form, and as the gate before launch. Pairs with the built-in /security-review and with multi-tenant-isolation, optional-integrations, and trust-and-verification.
+description: Read before shipping any app, making a repo or surface public, or when auditing an existing app for vulnerabilities. A portfolio-wide security checklist plus a repeatable audit method. Covers the obvious-open holes (missing auth, no isolation, secrets in the repo) AND the "you turned it on and it still leaks" tier (RLS policy holes, bucket listing, pre-auth money pumps, SSRF, prompt injection / AI that takes actions), plus the specific scars from real Feld Labs audits (secrets tracked in git, password-reset tokens returned in the response, LLM-to-SQL cross-tenant leaks, empty signing-secret fallbacks, plaintext provider keys, client-only PII redaction), plus a tenant-isolation/boundary tier for any multi-client product (static scans that are lints not controls, cache keys missing an input, catch-all buckets that misclassify, self-consistency checks defeated by symmetric errors). Use when adding auth, payments, file uploads, an AI feature, or a public form, and as the gate before launch. Pairs with the built-in /security-review and with multi-tenant-isolation, optional-integrations, and trust-and-verification.
 ---
 
 # Security Review Playbook
@@ -41,6 +41,26 @@ email), [[saas-billing]] (webhooks, money path), and [[trust-and-verification]] 
    detected, and pair each path with the one fix that breaks it.
 7. **Gate the fix.** Security fixes get an INDEPENDENT reviewer and are never self-merged (see
    [[delegate-and-qa]]). Verify fixes offline and mocked, never against live credentials.
+8. **A safety property nobody has watched FAIL is not known to hold.** This is the highest-yield rule
+   on this page and it is cheap. For every claimed safety property, write the test, then **remove the
+   property and confirm the test fails**, then restore it. A test that has only ever been green proves
+   nothing: it may be asserting something the code does not do, or nothing at all.
+   In a real audit here, one product had six claimed isolation properties. Exactly one had been verified
+   this way (a read-only database flag, checked by flipping it off and watching the test go red). That
+   one property survived three independent adversarial audits intact. **Every other property, asserted
+   only in prose, was found to be false.** The discriminator was not care or seniority; it was whether
+   anyone had seen the test fail.
+9. **Fix the CLASS, not the instance that was demonstrated.** The most common way a security fix fails
+   review is that the author patches the exact call path the reviewer showed them, writes a comment
+   claiming the class is closed, and leaves the other three call paths open. Before calling a fix done:
+   enumerate EVERY entry point to the capability being gated and test each one. In the same audit, an
+   offboarding gate was fixed on the reporting path while two other paths still read the departed
+   client's data, and an existence check was added to the write path while the READ path (the one that
+   actually leaked) was never touched. Both fixes shipped with comments asserting the general property.
+10. **Distrust your own prose.** When you write "this is safe because X handles it", either trace X and
+   give it its own failing-then-passing test, or write plainly that it is NOT handled. A confident
+   comment asserting an enforcement that does not exist is worse than no comment: it stops the next
+   reader (and the next auditor) from checking.
 
 ## Tier 0: the doors that are just open (check these first)
 
@@ -160,6 +180,64 @@ a fail-closed size assert). Both patterns are in `references/ai-endpoint-securit
   unused fetch/upload modules). If it is not used, delete it, do not leave it for a future refactor to
   rewire.
 
+## Tier 3: tenant-isolation and boundary scars (any multi-client or multi-tenant product)
+
+Found in a 2026-08 audit of a local-first product holding several clients' complete financial ledgers,
+one database file per client. Every item below was REPRODUCED, not theorized, and each generalizes
+past the product it came from.
+
+- **A static text scan cannot enforce absence in a dynamic language. It is a lint, not a control.**
+  A repo-wide test asserting a dangerous construct "never appears" was the load-bearing half of an
+  isolation argument. It was defeated by ordinary code: the token held in a `const`, built by
+  concatenation, split by template interpolation, reached through an alternate API the pattern did not
+  list, and a nested backtick truncating a lazy regex capture. A real cross-tenant join ran with the
+  test green. **If you need enforcement, enforce at runtime** (here: assert the connection has no
+  second database attached, on open and before each query). Keep the static test as a lint against
+  accidents, and say so in its header instead of describing it as a guarantee.
+- **Cache keys must contain every input that determines the answer.** A per-tenant resource cache keyed
+  on tenant id but not on the resolved resource path served ONE CLIENT'S DATABASE under another
+  client's id, silently, for the process lifetime, after a single wrong call. Key on the full tuple,
+  and when the same id is requested against a different resource, **refuse both** rather than picking:
+  either answer could be the wrong tenant's data.
+- **Canonicalize paths before comparing them.** `path.resolve()` normalizes but does not follow
+  symlinks, and macOS is case-insensitive. Two "different" paths reaching one physical file let one
+  tenant be counted twice under two identities. Use `realpathSync`.
+- **A wrapper that constrains access must not hand out the raw handle.** A module opened tenant
+  databases read-only, then returned the underlying driver object alongside the constrained client.
+  Every bypass ran through that handle. Note also that "read-only" at one layer is not read-only at
+  all layers: the flag blocked SQL writes but still permitted a full-file `backup()` copy of a client
+  database, and still permitted attaching and reading a second tenant's file.
+- **Sanitizing structured input by "projecting onto known keys" must recurse.** A top-level projection
+  fixed the demonstrated smuggling; the same payload nested one level inside an array element still
+  round-tripped to disk. `Array.isArray(x) ? x : default` validates SHAPE, not CONTENTS. Validate
+  elements, and validate referential integrity (an id in one collection must exist in the other) or
+  rows silently vanish.
+- **Fail-open error handling inside a security check.** `try { ...count expected... } catch { return 0 }`
+  followed by `if (expected > 0 && actual < expected)` means any error silently disables the check. A
+  check that cannot run must throw, never pass.
+- **A self-consistency invariant will NOT catch an error that flows through both sides of it.** A
+  misclassified value was subtracted from both assets and equity, so the balance check still passed and
+  the report looked signed-off. Do not rely on `A = L + E`, debits-equal-credits, or a checksum to catch
+  a defect that is symmetric across the identity. Reconcile against an INDEPENDENT source (here: the sum
+  of the per-tenant statements) instead.
+- **A catch-all bucket that flattens a type dimension misclassifies silently.** Unmatched records were
+  funnelled into one fallback bucket with a hardcoded type. For records of that type it was right; for
+  every other type it moved the value to the wrong section of the report, with the correct total. If you
+  need a fallback bucket, make one per type, or refuse to render rather than guess.
+- **A partially threaded injection seam falls back to the default silently.** Introducing an injected
+  data source and then missing one nested call site means that call quietly reads the ORIGINAL source
+  and returns zero rows (the ids do not match), which renders as a real-looking `$0` line rather than an
+  error. When you add a seam, enumerate every call site including transitive helpers, and prefer a
+  signature that makes the omission a type error.
+- **Guard the not-yet-implemented path instead of letting it render.** Where a feature was known to be
+  incomplete (drill-down across tenants), the code returned an empty result under a real number. Throw
+  with a clear message. The product already did this correctly elsewhere for an unsupported mode; the
+  inconsistency was the bug.
+
+**Process note that materially affects audit quality:** run each agent in its own git worktree. Two
+audit agents sharing one working tree wrote probe files into each other's runs and contaminated a guard
+result, which cost a re-run and left one finding less trustworthy than the others.
+
 ## Severity and output
 
 Report most-severe first. For each finding: **severity**, one-line summary, `file:line`, the concrete
@@ -207,3 +285,13 @@ clean pass only means those lenses did not fire.
 Nothing ships from a security review by self-merge. Findings get an independent second reviewer;
 fixes are verified offline and mocked; live-credential and destructive-history actions wait for
 explicit human sign-off. On by default: rotate first, ask questions later, when a secret has leaked.
+
+Two additions earned the hard way (2026-08):
+
+- **Every fix ships with a test that was watched to FAIL before the fix, and again when the fix is
+  temporarily reverted.** No exceptions. See method step 8; this single rule separated the one
+  property that held from the five that did not.
+- **When the same author has been wrong twice about whether a fix closed the class, they stop writing
+  the fixes.** Hand the remediation to a different agent or person. This is not a judgment about
+  competence; it is that an author cannot audit their own blind spot, and the second and third rounds
+  of a repeated failure are the expensive ones.
