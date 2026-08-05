@@ -2,6 +2,15 @@
 
 Newest first. Bump `feld-skills/.claude-plugin/plugin.json` version with each change.
 
+## 0.21.0 - 2026-08-05
+- product-register: NEW skill. Establishes `PRODUCT-REGISTER.md`, a by-function state map (fixed status
+  vocabulary: LIVE / DORMANT-FLAGGED / IN-PROGRESS / PLANNED / BROKEN) that is the single source of truth
+  for where a product stands, built from the codebase and cross-checked against reality (live flag
+  values, deploy-log commit, actual output), kept current in the SAME PR that changes a function's
+  status. Names the three-layer record (register = STATE, changelog + deploy-log = HISTORY) and requires
+  a monitor for anything that can silently break. Distilled from the Meridino gap (2026-08-05) where a
+  fragmented record and a missing state view let a harvest subsystem sit BROKEN for 11 days unnoticed.
+
 ## 0.20.0 - 2026-08-04
 - security-review: added **Tier 3, tenant-isolation and boundary scars**, plus four new steps in the
   audit method. All of it distilled from a 2026-08 audit of a multi-client financial product where
